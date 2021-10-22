@@ -28,7 +28,8 @@ find_package(Microsoft.GSL CONFIG REQUIRED)
 
 add_subdirectory(src)
 
-if (${BUILD_TESTS})
+if (BUILD_TESTS)
+    enable_testing()
     add_subdirectory(test ${CMAKE_BINARY_DIR}/tests_bin)
 endif()
 
