@@ -1,0 +1,70 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+    tags: [ '*' ]
+  pull_request:
+
+env:
+  CTEST_OUTPUT_ON_FAILURE: 1
+  GITHUB_HUNTER_USERNAME: ${{ secrets.HUNTER_USERNAME }}
+  GITHUB_HUNTER_TOKEN: ${{ secrets.HUNTER_TOKEN }}
+  CACHE_VERSION: v05
+  CACHE_PATHS: |
+    ~/.ccache
+    ~/.hunter
+
+jobs:
+  MacOS:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ${{ env.CACHE_PATHS }}
+          key: ${{ github.job }}-${{ env.CACHE_VERSION }}
+      - name: build
+        env:
+          DEVELOPER_DIR: /Applications/Xcode_11.7.app/Contents/Developer
+        run: ./scripts/build.sh
+
+  Linux:
+    strategy:
+      fail-fast: false
+      matrix:
+        options:
+          - name: "Linux: gcc-9"
+            run: ./scripts/build.sh -DCMAKE_CXX_COMPIILER=g++-9
+          - name: "Linux: clang-10"
+            run: ./scripts/build.sh -DCMAKE_CXX_COMPILER=clang++-10
+    name: "${{ matrix.options.name }}"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: ${{ env.CACHE_PATHS }}
+          key: ${{ github.job }}-${{ matrix.options.name }}-${{ env.CACHE_VERSION }}
+      - name: "${{ matrix.options.name }}"
+        run: "${{ matrix.options.run }}"
+
+  clang-tidy:
+    name: "Linux: clang-tidy"
+    runs-on: ubuntu-latest
+    container: soramitsu/kagome-dev:2-minideb
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/cache@v2
+        with:
+          path: ${{ env.CACHE_PATHS }}
+          key: ${{ github.job }}-${{ env.CACHE_VERSION }}
+      - name: clang-tidy
+        env:
+          # build only generated files, so clang-tidy will work correctly
+          BUILD_TARGET: generated
+        run: |
+          ./scripts/build.sh
+          ./scripts/generate_clang_tidy_diff.sh
