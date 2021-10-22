@@ -14,8 +14,8 @@ git submodule update --init
 if [ "${BUILD_TARGET}" != "generated" ]
 then
   cmake . -B"${BUILD_DIR}" -DBUILD_TESTS=ON "$@"
-  cmake --build "${BUILD_DIR}" -- "${MAKE_ARGS}"
-else
-  cmake . -B"${BUILD_DIR}"
   cmake --build "${BUILD_DIR}" --target "${BUILD_TARGET}" -- "${MAKE_ARGS}"
+else
+  cmake . -B"${BUILD_DIR}" "$@"
+  cmake --build "${BUILD_DIR}" --target "generated" -- "${MAKE_ARGS}"
 fi
