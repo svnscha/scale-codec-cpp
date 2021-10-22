@@ -76,7 +76,7 @@ I decodeInteger(S &stream) {
   // clang-format on
 
   if (!stream.hasMore(size)) {
-    common::raise(DecodeError::NOT_ENOUGH_DATA);
+    raise(DecodeError::NOT_ENOUGH_DATA);
     UNREACHABLE
   }
 
