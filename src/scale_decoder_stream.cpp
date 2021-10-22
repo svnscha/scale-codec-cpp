@@ -5,7 +5,7 @@
 
 #include "scale/scale_decoder_stream.hpp"
 
-#include <span>
+#include <gsl/span>
 
 #include "scale/scale_error.hpp"
 #include "scale/types.hpp"
