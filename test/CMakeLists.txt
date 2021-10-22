@@ -47,6 +47,8 @@ endfunction()
 # for tests' XML reports
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/xunit)
 
+enable_testing()
+
 addtest(scale_decoder_stream_test
         scale_decoder_stream_test.cpp
         )
