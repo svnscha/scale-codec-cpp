@@ -9,7 +9,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/cmake/HunterGate.cmake)
 set(HUNTER_STATUS_DEBUG ON)
 HunterGate(
         URL  https://github.com/soramitsu/soramitsu-hunter/archive/9ca72322e8d9de70d360dc7f371b223d32999123.zip
-        SHA1 d48b2b17acfe4c803802a0b61f110be45f34a78a
+        SHA1 37cc1150526fb9c5dcf197f918e5d9aab611823f
 )
 
 project(Scale CXX)
