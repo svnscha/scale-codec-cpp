@@ -10,11 +10,12 @@ cd "$(dirname "$0")/.."
 
 git submodule update --init
 
-cmake . -B"${BUILD_DIR}" "$@"
-
 # see clang-tidy build in ci.yml github workflow
 if [ "${BUILD_TARGET}" != "generated" ]
 then
-  cmake --build "${BUILD_DIR}" -DBUILD_TESTS=ON -- "${MAKE_ARGS}"
+  cmake . -B"${BUILD_DIR}" -DBUILD_TESTS=ON "$@"
+  cmake --build "${BUILD_DIR}" -- "${MAKE_ARGS}"
+else
+  cmake . -B"${BUILD_DIR}"
+  cmake --build "${BUILD_DIR}" --target "${BUILD_TARGET}" -- "${MAKE_ARGS}"
 fi
-cmake --build "${BUILD_DIR}" --target "${BUILD_TARGET}" -- "${MAKE_ARGS}"
