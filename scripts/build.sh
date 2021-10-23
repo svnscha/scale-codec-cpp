@@ -10,16 +10,16 @@ cd "$(dirname "$0")/.."
 
 git submodule update --init
 
-CMAKE_ARGS=( "-B\"${BUILD_DIR}\"" "${@[@]}" )
+CMAKE_ARGS=( "-B\"${BUILD_DIR}\"" "$@" )
 
 # see clang-tidy build in ci.yml github workflow
 if [ "${BUILD_TARGET}" == "test" ]; then
   CMAKE_ARGS+=( "-DBUILD_TESTS=ON" )
 fi
-cmake . "${CMAKE_ARGS[*]}"
+echo "${CMAKE_ARGS[*]}" | xargs cmake .
 
 if [ "${BUILD_TARGET}" == "test" ]; then
   # first build test executables
-  cmake --build "${BUILD_DIR}" -- "${MAKE_ARGS}"
+  echo "${MAKE_ARGS}" | xargs cmake --build "${BUILD_DIR}" --
 fi
-cmake --build "${BUILD_DIR}" --target "${BUILD_TARGET}" -- "${MAKE_ARGS}"
+echo "${MAKE_ARGS}" | xargs cmake --build "${BUILD_DIR}" --target "${BUILD_TARGET}" --
