@@ -64,8 +64,7 @@ jobs:
           key: ${{ github.job }}-${{ env.CACHE_VERSION }}
       - name: clang-tidy
         env:
-          # build only generated files, so clang-tidy will work correctly
-          BUILD_TARGET: generated
+          BUILD_TARGET: all
         run: |
           ./scripts/build.sh
           ./scripts/generate_clang_tidy_diff.sh

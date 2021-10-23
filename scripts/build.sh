@@ -1,7 +1,7 @@
 #!/bin/bash -xe
 
 BUILD_DIR="${BUILD_DIR:?BUILD_DIR variable is not defined}"
-BUILD_TARGET="${BUILD_FINAL_TARGET:-test}"
+BUILD_TARGET="${BUILD_TARGET:-test}"
 
 JOBS_NUM="$(( $(nproc 2>/dev/null || sysctl -n hw.ncpu) + 1 ))"
 MAKE_ARGS="${MAKE_ARGS:-"-j$JOBS_NUM"}"
