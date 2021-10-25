@@ -5,7 +5,7 @@
 
 #include "scale/buffer/hexutil.hpp"
 
-#include <span>
+#include <gsl/span>
 
 #include <boost/algorithm/hex.hpp>
 

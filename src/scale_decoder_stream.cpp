@@ -5,7 +5,7 @@
 
 #include "scale/scale_decoder_stream.hpp"
 
-#include <span>
+#include <gsl/span>
 
 #include "scale/scale_error.hpp"
 #include "scale/types.hpp"
@@ -38,8 +38,7 @@ CompactInteger decodeCompactInteger(ScaleDecoderStream &stream) {
     number = first_byte;
     size_t multiplier = 256u;
     if (!stream.hasMore(3u)) {
-      // not enough data to decode integer
-      common::raise(DecodeError::NOT_ENOUGH_DATA);
+      raise(DecodeError::NOT_ENOUGH_DATA);
     }
 
     for (auto i = 0u; i < 3u; ++i) {
@@ -55,8 +54,7 @@ CompactInteger decodeCompactInteger(ScaleDecoderStream &stream) {
   case 0b11: {
     auto bytes_count = ((first_byte) >> 2u) + 4u;
     if (!stream.hasMore(bytes_count)) {
-      // not enough data to decode integer
-      common::raise(DecodeError::NOT_ENOUGH_DATA);
+      raise(DecodeError::NOT_ENOUGH_DATA);
     }
 
     CompactInteger multiplier{1u};
@@ -84,16 +82,15 @@ ScaleDecoderStream::ScaleDecoderStream(gsl::span<const uint8_t> span)
 
 boost::optional<bool> ScaleDecoderStream::decodeOptionalBool() {
   auto byte = nextByte();
-  switch (byte) {
-  case static_cast<uint8_t>(OptionalBool::NONE):
+  switch (static_cast<OptionalBool>(byte)) {
+  case OptionalBool::NONE:
     return boost::none;
-  case static_cast<uint8_t>(OptionalBool::OPT_FALSE):
+  case OptionalBool::OPT_FALSE:
     return false;
-  case static_cast<uint8_t>(OptionalBool::OPT_TRUE):
+  case OptionalBool::OPT_TRUE:
     return true;
-  default:
-    common::raise(DecodeError::UNEXPECTED_VALUE);
-  };
+  }
+  raise(DecodeError::UNEXPECTED_VALUE);
 }
 
 bool ScaleDecoderStream::decodeBool() {
@@ -103,9 +100,8 @@ bool ScaleDecoderStream::decodeBool() {
     return false;
   case 1u:
     return true;
-  default:
-    common::raise(DecodeError::UNEXPECTED_VALUE);
-  };
+  }
+  raise(DecodeError::UNEXPECTED_VALUE);
 }
 
 ScaleDecoderStream &ScaleDecoderStream::operator>>(CompactInteger &v) {
@@ -127,7 +123,7 @@ bool ScaleDecoderStream::hasMore(uint64_t n) const {
 
 uint8_t ScaleDecoderStream::nextByte() {
   if (not hasMore(1)) {
-    common::raise(DecodeError::NOT_ENOUGH_DATA);
+    raise(DecodeError::NOT_ENOUGH_DATA);
   }
   ++current_index_;
   return *current_iterator_++;

@@ -65,7 +65,7 @@ public:
 
     // ensure that index is in [0, types_count)
     if (type_index >= sizeof...(Ts)) {
-      common::raise(DecodeError::WRONG_TYPE_INDEX);
+      raise(DecodeError::WRONG_TYPE_INDEX);
     }
 
     tryDecodeAsOneOfVariant<0>(v, type_index);
@@ -184,7 +184,7 @@ public:
     try {
       vec.resize(item_count);
     } catch (const std::bad_alloc &) {
-      common::raise(DecodeError::TOO_MANY_ITEMS);
+      raise(DecodeError::TOO_MANY_ITEMS);
     }
 
     for (size_type i = 0u; i < item_count; ++i) {
@@ -216,7 +216,7 @@ public:
     try {
       lst.reserve(item_count);
     } catch (const std::bad_alloc &) {
-      common::raise(DecodeError::TOO_MANY_ITEMS);
+      raise(DecodeError::TOO_MANY_ITEMS);
     }
 
     for (size_type i = 0u; i < item_count; ++i) {

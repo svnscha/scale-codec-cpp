@@ -44,7 +44,7 @@ void encodeCompactInteger(const CompactInteger &value,
   // cannot encode negative numbers
   // there is no description how to encode compact negative numbers
   if (value < 0) {
-    common::raise(EncodeError::NEGATIVE_COMPACT_INTEGER);
+    raise(EncodeError::NEGATIVE_COMPACT_INTEGER);
   }
 
   if (value < compact::EncodingCategoryLimits::kMinUint16) {
@@ -70,7 +70,7 @@ void encodeCompactInteger(const CompactInteger &value,
   size_t requiredLength = 1 + bigIntLength;
 
   if (bigIntLength > 67) {
-    common::raise(EncodeError::COMPACT_INTEGER_TOO_BIG);
+    raise(EncodeError::COMPACT_INTEGER_TOO_BIG);
   }
 
   ByteArray result;

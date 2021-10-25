@@ -106,7 +106,7 @@ namespace scale::detail {
     static constexpr uint8_t types_count = sizeof...(T);
     // ensure that index is in [0, types_count)
     if (type_index >= types_count) {
-      common::raise(DecodeError::WRONG_TYPE_INDEX);
+      raise(DecodeError::WRONG_TYPE_INDEX);
     }
 
     auto &&decoder = variant_impl::VariantDecoder(type_index, result, stream);
