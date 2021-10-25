@@ -27,20 +27,20 @@ namespace scale {
   }
 
   /**
-   * Adds to scale encoded vector of EncodeOpaqueValue another
-   * EncodeOpaqueValue. If current vector is empty, then it is replaced by new
+   * Adds an EncodeOpaqueValue to a scale encoded vector of EncodeOpaqueValue's.
+   * If the current vector is empty, then it is replaced by a new
    * EncodeOpaqueValue
-   * In other words what actually happens could be implemented like that:
+   * In other words, what actually happens could be implemented like that:
    * @code{.cpp}
    * auto vec = scale::decode<vector<EncodeOpaqueValue>>(self_encoded);
    * vec.push_back(scale::encode(EncodeOpaqueValue(input));
    * self_encoded = scale::encode(vec);
    * @endcode
-   * but actual implementation a bit more optimal
-   * @param self_encoded Current encoded vector of EncodeOpaqueValue
-   * @param input is a vector, that is encoded as EncodeOpaqueValue and added to
-   * @param self_encoded
-   * @return success input was appended to self_encoded, failure otherwise
+   * but the actual implementation is a bit more optimal
+   * @param self_encoded - An encoded vector of EncodeOpaqueValue
+   * @param input - A vector encoded as an EncodeOpaqueValue and added to
+   * \param self_encoded
+   * @return success if input was appended to self_encoded, failure otherwise
    */
   outcome::result<void> append_or_new_vec(std::vector<uint8_t> &self_encoded,
                                           gsl::span<const uint8_t> input);
