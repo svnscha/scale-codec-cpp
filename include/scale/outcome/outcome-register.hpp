@@ -21,7 +21,7 @@
 
 #define OUTCOME_USE_STD_IN_PLACE_TYPE 1
 
-namespace __outcome_detail {
+namespace scale::__outcome_detail {
 
 template <typename T> class Category : public std::error_category {
 public:
@@ -52,11 +52,11 @@ private:
   Category() = default;
 }; /* end of class */
 
-} // namespace __outcome_detail
+} // namespace scale::__outcome_detail
 
 #define __OUTCOME_DEFINE_MAKE_ERROR_CODE(Enum)                                 \
   extern std::error_code make_error_code(Enum e) {                             \
-    return {static_cast<int>(e), __outcome_detail::Category<Enum>::get()};     \
+    return {static_cast<int>(e), scale::__outcome_detail::Category<Enum>::get()};     \
   }
 
 #define __OUTCOME_DECLARE_MAKE_ERROR_CODE(Enum)                                \
@@ -87,14 +87,14 @@ private:
   __OUTCOME_DEFINE_MAKE_ERROR_CODE(Enum)                                       \
   };                                                                           \
   template <>                                                                  \
-  std::string __outcome_detail::Category<ns::Enum>::toString(ns::Enum Name)
+  std::string scale::__outcome_detail::Category<ns::Enum>::toString(ns::Enum Name)
 
 /// MUST BE EXECUTED AT FILE LEVEL(global namespace) IN CPP
 // Enum - enum name. Example: EncodeError
 // Name - variable name. Example: e
 #define OUTCOME_CPP_DEFINE_CATEGORY_2(Enum, Name)                              \
   __OUTCOME_DEFINE_MAKE_ERROR_CODE(Enum)                                       \
-  template <> std::string __outcome_detail::Category<Enum>::toString(Enum Name)
+  template <> std::string scale::__outcome_detail::Category<Enum>::toString(Enum Name)
 
 // kind of "macro overloading"
 #define __GET_MACRO_3(_1, _2, _3, NAME, ...) NAME
