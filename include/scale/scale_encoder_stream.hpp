@@ -7,8 +7,8 @@
 #define SCALE_CORE_SCALE_SCALE_ENCODER_STREAM_HPP
 
 #include <deque>
+#include <optional>
 
-#include <boost/optional.hpp>
 #include <boost/variant.hpp>
 #include <gsl/span>
 
@@ -137,7 +137,7 @@ public:
    * @return reference to stream
    */
   template <class T>
-  ScaleEncoderStream &operator<<(const boost::optional<T> &v) {
+  ScaleEncoderStream &operator<<(const std::optional<T> &v) {
     // optional bool is a special case of optional values
     // it should be encoded using one byte instead of two
     // as described in specification
@@ -273,7 +273,7 @@ protected:
   ScaleEncoderStream &putByte(uint8_t v);
 
 private:
-  ScaleEncoderStream &encodeOptionalBool(const boost::optional<bool> &v);
+  ScaleEncoderStream &encodeOptionalBool(const std::optional<bool> &v);
 
   const bool drop_data_;
   std::deque<uint8_t> stream_;

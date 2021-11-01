@@ -7,9 +7,9 @@
 #define SCALE_CORE_SCALE_SCALE_DECODER_STREAM_HPP
 
 #include <array>
+#include <optional>
 
 #include <boost/multiprecision/cpp_int.hpp>
-#include <boost/optional.hpp>
 #include <boost/variant.hpp>
 #include <gsl/span>
 
@@ -132,7 +132,7 @@ public:
    * @param v optional value reference
    * @return reference to stream
    */
-  template <class T> ScaleDecoderStream &operator>>(boost::optional<T> &v) {
+  template <class T> ScaleDecoderStream &operator>>(std::optional<T> &v) {
     using mutableT = std::remove_const_t<T>;
 
     static_assert(std::is_default_constructible_v<mutableT>);
@@ -275,9 +275,9 @@ private:
   bool decodeBool();
   /**
    * @brief special case of optional values as described in specification
-   * @return boost::optional<bool> value
+   * @return std::optional<bool> value
    */
-  boost::optional<bool> decodeOptionalBool();
+  std::optional<bool> decodeOptionalBool();
 
   template <size_t I, class... Ts>
   void decodeElementOfTuple(std::tuple<Ts...> &v) {
