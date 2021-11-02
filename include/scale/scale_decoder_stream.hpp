@@ -16,6 +16,8 @@
 
 namespace scale {
 
+  CompactInteger decodeCompactInteger(class ScaleDecoderStream &stream);
+
   class ScaleDecoderStream {
    public:
     // special tag to differentiate decoding streams from others
@@ -138,7 +140,7 @@ namespace scale {
               typename E = std::decay_t<T>,
               typename = std::enable_if_t<!std::is_integral_v<E>>,
               typename = std::enable_if_t<std::is_enum_v<E>>>
-    ScaleDecoderStream &operator>>(T& v) {
+    ScaleDecoderStream &operator>>(T &v) {
       std::underlying_type_t<E> value;
       *this >> value;
       v = static_cast<E>(value);
@@ -181,7 +183,15 @@ namespace scale {
      * @param v compact integer reference
      * @return
      */
-    ScaleDecoderStream &operator>>(CompactInteger &v);
+    template <typename T,
+              typename C = std::decay_t<T>,
+              typename = std::enable_if_t<std::is_convertible_v<C, CompactInteger>>,
+              typename = std::enable_if_t<!std::is_integral_v<C>>,
+              typename = std::enable_if_t<!std::is_enum_v<C>>>
+    std::enable_if_t<std::is_convertible_v<C, CompactInteger> && !std::is_integral_v<C> && !std::is_enum_v<C>, ScaleDecoderStream &> operator>>(T &v) {
+      v = decodeCompactInteger(*this);
+      return *this;
+    }
 
     /**
      * @brief decodes vector of items

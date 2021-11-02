@@ -11,7 +11,7 @@
 #include "scale/types.hpp"
 
 namespace scale {
-namespace {
+//namespace {
 CompactInteger decodeCompactInteger(ScaleDecoderStream &stream) {
   auto first_byte = stream.nextByte();
 
@@ -75,7 +75,7 @@ CompactInteger decodeCompactInteger(ScaleDecoderStream &stream) {
 
   return CompactInteger{number};
 }
-} // namespace
+//} // namespace
 
 ScaleDecoderStream::ScaleDecoderStream(gsl::span<const uint8_t> span)
     : span_{span}, current_iterator_{span_.begin()}, current_index_{0} {}
@@ -102,11 +102,6 @@ bool ScaleDecoderStream::decodeBool() {
     return true;
   }
   raise(DecodeError::UNEXPECTED_VALUE);
-}
-
-ScaleDecoderStream &ScaleDecoderStream::operator>>(CompactInteger &v) {
-  v = decodeCompactInteger(*this);
-  return *this;
 }
 
 ScaleDecoderStream &ScaleDecoderStream::operator>>(std::string &v) {
