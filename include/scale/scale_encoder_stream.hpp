@@ -16,9 +16,6 @@
 
 namespace scale {
 
-  void encodeCompactInteger(const CompactInteger &value,
-                            class ScaleEncoderStream &out);
-
   /**
    * @class ScaleEncoderStream designed to scale-encode data to stream
    */
