@@ -49,9 +49,9 @@ template<>
 const std::vector<Bar> EnumTest<Bar>::values {Bar::A, Bar::B, Bar::C};
 
 TYPED_TEST(EnumTest, ConsistentEncodingDecoding) {
-  for(auto& param: TestFixture::values) {
+  for(auto const& param: TestFixture::values) {
     SCOPED_TRACE(TestFixture::enum_name);
-    ScaleEncoderStream encoder;
+    ScaleEncoderStream encoder {};
     auto& value = param;
     ASSERT_NO_THROW((encoder << value));
     ScaleDecoderStream decoder{encoder.data()};
@@ -62,9 +62,9 @@ TYPED_TEST(EnumTest, ConsistentEncodingDecoding) {
 }
 
 TYPED_TEST(EnumTest, CorrectEncoding) {
-  for(auto& param: TestFixture::values) {
+  for(auto const& param: TestFixture::values) {
     SCOPED_TRACE(TestFixture::enum_name);
-    ScaleEncoderStream encoder;
+    ScaleEncoderStream encoder {};
     auto& value = param;
     ASSERT_NO_THROW((encoder << value));
     ScaleDecoderStream decoder{encoder.data()};
