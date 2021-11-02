@@ -231,8 +231,8 @@ namespace scale {
     template <typename T,
               typename E = std::decay_t<T>,
               typename = std::enable_if_t<std::is_enum_v<E>>>
-    ScaleEncoderStream &operator<<(const E &v) {
-      return *this << static_cast<const std::underlying_type_t<E> &>(v);
+    ScaleEncoderStream &operator<<(const T &v) {
+      return *this << static_cast<std::underlying_type_t<E>>(v);
     }
 
     /**
