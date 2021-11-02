@@ -132,11 +132,6 @@ ScaleEncoderStream &ScaleEncoderStream::putByte(uint8_t v) {
   return *this;
 }
 
-ScaleEncoderStream &ScaleEncoderStream::operator<<(const CompactInteger &v) {
-  encodeCompactInteger(v, *this);
-  return *this;
-}
-
 ScaleEncoderStream &
 ScaleEncoderStream::encodeOptionalBool(const std::optional<bool> &v) {
   auto result = OptionalBool::OPT_TRUE;

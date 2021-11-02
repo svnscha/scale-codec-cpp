@@ -16,6 +16,9 @@
 
 namespace scale {
 
+  void encodeCompactInteger(const CompactInteger &value,
+                            class ScaleEncoderStream &out);
+
   /**
    * @class ScaleEncoderStream designed to scale-encode data to stream
    */
@@ -240,7 +243,14 @@ namespace scale {
      * @param v value to encode
      * @return reference to stream
      */
-    ScaleEncoderStream &operator<<(const CompactInteger &v);
+    template <typename T,
+              typename C = std::decay_t<T>,
+              typename = std::enable_if_t<!std::is_integral_v<C>>,
+              typename = std::enable_if_t<!std::is_enum_v<C>>>
+    ScaleEncoderStream &operator<<(const T &v) {
+      encodeCompactInteger(v, *this);
+      return *this;
+    }
 
    protected:
     template <size_t I, class... Ts>
