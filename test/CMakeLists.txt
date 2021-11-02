@@ -69,6 +69,14 @@ target_link_libraries(scale_compact_test
         buffer
         )
 
+addtest(scale_enum_test
+        scale_enum_test.cpp
+        )
+target_link_libraries(scale_enum_test
+        scale
+        buffer
+        )
+
 addtest(scale_fixed_test
         scale_fixed_test.cpp
         )
