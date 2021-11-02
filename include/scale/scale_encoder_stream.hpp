@@ -245,6 +245,7 @@ namespace scale {
      */
     template <typename T,
               typename C = std::decay_t<T>,
+              typename = std::enable_if_t<std::is_convertible_v<C, CompactInteger>>,
               typename = std::enable_if_t<!std::is_integral_v<C>>,
               typename = std::enable_if_t<!std::is_enum_v<C>>>
     ScaleEncoderStream &operator<<(const T &v) {
