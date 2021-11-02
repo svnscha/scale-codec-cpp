@@ -80,11 +80,11 @@ CompactInteger decodeCompactInteger(ScaleDecoderStream &stream) {
 ScaleDecoderStream::ScaleDecoderStream(gsl::span<const uint8_t> span)
     : span_{span}, current_iterator_{span_.begin()}, current_index_{0} {}
 
-boost::optional<bool> ScaleDecoderStream::decodeOptionalBool() {
+std::optional<bool> ScaleDecoderStream::decodeOptionalBool() {
   auto byte = nextByte();
   switch (static_cast<OptionalBool>(byte)) {
   case OptionalBool::NONE:
-    return boost::none;
+    return std::nullopt;
   case OptionalBool::OPT_FALSE:
     return false;
   case OptionalBool::OPT_TRUE:

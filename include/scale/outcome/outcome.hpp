@@ -15,7 +15,7 @@
 
 #include "outcome-register.hpp"
 
-namespace outcome {
+namespace scale::outcome {
 
 using namespace BOOST_OUTCOME_V2_NAMESPACE;
 
@@ -23,7 +23,7 @@ template <class R, class S = std::error_code,
           class NoValuePolicy = policy::default_policy<R, S, void>>
 using result = basic_result<R, S, NoValuePolicy>;
 
-} // namespace outcome
+} // namespace scale::outcome
 
 #define OUTCOME_TRY(...) BOOST_OUTCOME_TRY(__VA_ARGS__)
 

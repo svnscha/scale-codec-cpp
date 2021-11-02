@@ -6,8 +6,8 @@
 #include <gtest/gtest.h>
 
 #include <string>
+#include <optional>
 
-#include <boost/optional.hpp>
 #include "scale/scale_encoder_stream.hpp"
 
 using scale::ScaleEncoderStream;
@@ -60,7 +60,7 @@ TEST_F(ScaleCounter, String) {
  * @then the resulting stream size equals to expected
  */
 TEST_F(ScaleCounter, EmptyOptional) {
-  boost::optional<uint32_t> var = boost::none;
+  std::optional<uint32_t> var = std::nullopt;
   s << var;
   SIZE(1);
 }
@@ -71,7 +71,7 @@ TEST_F(ScaleCounter, EmptyOptional) {
  * @then the resulting stream size equals to expected
  */
 TEST_F(ScaleCounter, NonEmptyOptional) {
-  boost::optional<uint32_t> var = 10;
+  std::optional<uint32_t> var = 10;
   s << var;
   SIZE(5);
 }

@@ -16,7 +16,7 @@ namespace scale {
    * @param t error value
    */
   template <typename T, typename = std::enable_if_t<std::is_enum_v<T>>>
-  [[noreturn]] void raise (T t) {
+  [[noreturn]] void raise(T t) {
     std::error_code ec = make_error_code(t);
     boost::throw_exception(std::system_error(ec));
   }

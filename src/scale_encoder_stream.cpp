@@ -138,7 +138,7 @@ ScaleEncoderStream &ScaleEncoderStream::operator<<(const CompactInteger &v) {
 }
 
 ScaleEncoderStream &
-ScaleEncoderStream::encodeOptionalBool(const boost::optional<bool> &v) {
+ScaleEncoderStream::encodeOptionalBool(const std::optional<bool> &v) {
   auto result = OptionalBool::OPT_TRUE;
 
   if (!v.has_value()) {
