@@ -296,7 +296,7 @@ namespace scale {
   template <typename S,
             typename T,
             typename E = std::decay_t<T>,
-            typename = std::enable_if_t<S::is_decoder_stream>,
+            typename = std::enable_if_t<S::is_encoder_stream>,
             typename = std::enable_if_t<std::is_enum_v<E>>>
   S &operator<<(S &s, const T &v) {
     return s << static_cast<std::underlying_type_t<E>>(v);
