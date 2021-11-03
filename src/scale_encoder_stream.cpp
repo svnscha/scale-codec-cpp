@@ -10,7 +10,7 @@
 #include "scale/types.hpp"
 
 namespace scale {
-//namespace {
+namespace {
 // must not use these functions outside encodeInteger
 inline void encodeFirstCategory(uint8_t value, ScaleEncoderStream &out) {
   // only values from [0, kMinUint16) can be put here
@@ -103,7 +103,7 @@ void encodeCompactInteger(const CompactInteger &value,
     out << c;
   }
 }
-//} // namespace
+} // namespace
 
 ScaleEncoderStream::ScaleEncoderStream()
             : drop_data_{false}, bytes_written_{0} {}
@@ -129,6 +129,11 @@ ScaleEncoderStream &ScaleEncoderStream::putByte(uint8_t v) {
   if (not drop_data_) {
     stream_.push_back(v);
   }
+  return *this;
+}
+
+ScaleEncoderStream &ScaleEncoderStream::operator<<(const CompactInteger &v) {
+  encodeCompactInteger(v, *this);
   return *this;
 }
 

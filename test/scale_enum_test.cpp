@@ -44,7 +44,8 @@ TYPED_TEST(EnumTest, ConsistentEncodingDecoding) {
     SCOPED_TRACE(TestFixture::enum_name);
     ScaleEncoderStream encoder{};
     auto &value = param;
-    ASSERT_NO_THROW((encoder << value));
+    encoder << value;
+    //ASSERT_NO_THROW((encoder << value));
     ScaleDecoderStream decoder{encoder.data()};
     TypeParam decoded_value;
     ASSERT_NO_THROW((decoder >> decoded_value));
