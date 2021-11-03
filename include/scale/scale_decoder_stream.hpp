@@ -129,22 +129,6 @@ namespace scale {
       return *this;
     }
 
-    /* @brief scale-decodes any enum type as underlying type
-     * @tparam T enum type
-     * @param v value of enum type
-     * @return reference to stream
-     */
-    template <typename T,
-              typename E = std::decay_t<T>,
-              typename = std::enable_if_t<!std::is_integral_v<E>>,
-              typename = std::enable_if_t<std::is_enum_v<E>>>
-    ScaleDecoderStream &operator>>(T &v) {
-      std::underlying_type_t<E> value;
-      *this >> value;
-      v = static_cast<E>(value);
-      return *this;
-    }
-
     /**
      * @brief scale-decodes any optional value
      * @tparam T type of optional value
@@ -333,6 +317,25 @@ namespace scale {
     SpanIterator current_iterator_;
     SizeType current_index_;
   };
+
+  /**
+   * @brief scale-decodes any enum type as underlying type
+   * @tparam T enum type
+   * @param v value of enum type
+   * @return reference to stream
+   */
+  template <typename T,
+            typename S,
+            typename E = std::decay_t<T>,
+            typename = std::enable_if_t<S::is_decoding_stream>,
+            typename = std::enable_if_t<!std::is_integral_v<E>>,
+            typename = std::enable_if_t<std::is_enum_v<E>>>
+  S &operator>>(S &s, T &v) {
+    std::underlying_type_t<E> value;
+    s >> value;
+    v = static_cast<E>(value);
+    return s;
+  }
 
 }  // namespace scale
 
