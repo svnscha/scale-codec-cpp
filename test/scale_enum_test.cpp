@@ -6,6 +6,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include <scale/buffer/hexutil.hpp>
 #include <scale/scale_decoder_stream.hpp>
 #include <scale/scale_encoder_stream.hpp>
 #include <scale/types.hpp>
@@ -40,14 +41,18 @@ template <>
 const std::vector<Bar> EnumTest<Bar>::values{Bar::A, Bar::B, Bar::C};
 
 TYPED_TEST(EnumTest, ConsistentEncodingDecoding) {
+  SCOPED_TRACE(TestFixture::enum_name);
   for (auto const &param : TestFixture::values) {
-    SCOPED_TRACE(TestFixture::enum_name);
     ScaleEncoderStream encoder{};
+    std::cout << "=================\n";
     encoder << param;
+    std::cout << static_cast<std::underlying_type_t<TypeParam>>(param) << "\n";
+    std::cout << scale::hex_lower(encoder.data()) << "\n";
     //ASSERT_NO_THROW((encoder << param));
     ScaleDecoderStream decoder{encoder.data()};
     TypeParam decoded_value;
     ASSERT_NO_THROW((decoder >> decoded_value));
+    std::cout << static_cast<std::underlying_type_t<TypeParam>>(decoded_value) << "\n";
     ASSERT_EQ(decoded_value, param);
   }
 }
