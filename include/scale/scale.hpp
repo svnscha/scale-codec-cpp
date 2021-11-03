@@ -49,7 +49,7 @@ namespace scale {
     } catch (std::system_error &e) {
       return outcome::failure(e.code());
     }
-    return s.data();
+    return s.to_vector();
   }
 
   /**

@@ -38,7 +38,7 @@ namespace {
 TEST_P(VariantFixture, EncodeSuccessTest) {
   const auto &[value, match] = GetParam();
   ASSERT_NO_THROW(s << value);
-  ASSERT_EQ(s.data(), match);
+  ASSERT_EQ(s.to_vector(), match);
 }
 
 INSTANTIATE_TEST_CASE_P(CompactTestCases, VariantFixture,

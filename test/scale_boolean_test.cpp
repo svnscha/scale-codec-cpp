@@ -28,12 +28,12 @@ TEST(ScaleBoolTest, EncodeBoolSuccess) {
   {
     ScaleEncoderStream s;
     ASSERT_NO_THROW((s << true));
-    ASSERT_EQ(s.data(), (ByteArray{0x1}));
+    ASSERT_EQ(s.to_vector(), (ByteArray{0x1}));
   }
   {
     ScaleEncoderStream s;
     ASSERT_NO_THROW((s << false));
-    ASSERT_EQ(s.data(), (ByteArray{0x0}));
+    ASSERT_EQ(s.to_vector(), (ByteArray{0x0}));
   }
 }
 

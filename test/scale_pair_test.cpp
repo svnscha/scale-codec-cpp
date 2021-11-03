@@ -22,7 +22,7 @@ TEST(Scale, encodePair) {
 
   ScaleEncoderStream s;
   ASSERT_NO_THROW((s << std::make_pair(v1, v2)));
-  ASSERT_EQ(s.data(), (ByteArray{1, 2, 0, 0, 0}));
+  ASSERT_EQ(s.to_vector(), (ByteArray{1, 2, 0, 0, 0}));
 }
 
 /**

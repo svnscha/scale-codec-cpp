@@ -36,7 +36,7 @@ namespace scale {
     /**
      * @return vector of bytes containing encoded data
      */
-    std::vector<uint8_t> data() const;
+    std::vector<uint8_t> to_vector() const;
 
     /**
      * Get amount of encoded data written to the stream

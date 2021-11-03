@@ -51,7 +51,6 @@ namespace scale::detail {
             typename I = std::decay_t<T>,
             typename = std::enable_if_t<std::is_integral_v<I>>>
   I decodeInteger(S &stream) {
-    std::cout << "Decoding integer\n";
     constexpr size_t size = sizeof(I);
     static_assert(size <= 8);
 
@@ -76,7 +75,6 @@ namespace scale::detail {
     for (size_t i = 0; i < size; ++i) {
       v += multiplier(i) * static_cast<uint64_t>(stream.nextByte());
     }
-    std::cout << " > uint64_t repr is " << v << "\n";
     // now we have an uint64 native-endian value
     // which can store either a signed or an unsigned value
 
@@ -90,7 +88,6 @@ namespace scale::detail {
     // than  2^(size_in_bits-1)
     bool is_positive_signed = v < sign_bit(size - 1);
     if (std::is_unsigned<I>() || is_positive_signed) {
-      std::cout << " = Positive, return unchanged\n";
       return static_cast<I>(v);
     }
 
@@ -102,7 +99,6 @@ namespace scale::detail {
     // but it doesn't spoil the result.
     // static_cast to a smaller type cuts these higher bits off.
     I sv = -static_cast<I>((~v) + 1);
-    std::cout << " = Negative, return ~v + 1: " << sv << "\n";
     return sv;
   }
 }  // namespace scale::detail

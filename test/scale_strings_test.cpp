@@ -21,7 +21,7 @@ TEST(Scale, RawStringEncodeSuccess) {
 auto * v = "asdadad";
 ScaleEncoderStream s{};
 ASSERT_NO_THROW((s << v));
-ASSERT_EQ(s.data(), (ByteArray{28, 'a', 's', 'd', 'a', 'd', 'a', 'd'}));
+ASSERT_EQ(s.to_vector(), (ByteArray{28, 'a', 's', 'd', 'a', 'd', 'a', 'd'}));
 }
 
 /**
@@ -33,7 +33,7 @@ TEST(Scale, StdStringEncodeSuccess) {
 std::string v = "asdadad";
 ScaleEncoderStream s;
 ASSERT_NO_THROW((s << v));
-ASSERT_EQ(s.data(), (ByteArray{28, 'a', 's', 'd', 'a', 'd', 'a', 'd'}));
+ASSERT_EQ(s.to_vector(), (ByteArray{28, 'a', 's', 'd', 'a', 'd', 'a', 'd'}));
 }
 
 /**

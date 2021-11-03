@@ -38,7 +38,7 @@ TEST_P(Int8Test, EncodeSuccess) {
   auto [value, match] = GetParam();
   ScaleEncoderStream s;
   ASSERT_NO_THROW((s << value));
-  ASSERT_EQ(s.data(), match);
+  ASSERT_EQ(s.to_vector(), match);
 }
 
 TEST_P(Int8Test, DecodeSuccess) {
@@ -71,7 +71,7 @@ TEST_P(Uint8Test, EncodeSuccess) {
   auto [value, match] = GetParam();
   ScaleEncoderStream s;
   ASSERT_NO_THROW((s << value));
-  ASSERT_EQ(s.data(), match);
+  ASSERT_EQ(s.to_vector(), match);
 }
 
 /**
@@ -107,7 +107,7 @@ TEST_P(Int16Test, EncodeSuccess) {
   auto [value, match] = GetParam();
   ScaleEncoderStream s;
   ASSERT_NO_THROW((s << value));
-  ASSERT_EQ(s.data(), match);
+  ASSERT_EQ(s.to_vector(), match);
 }
 
 /**
@@ -147,7 +147,7 @@ TEST_P(Uint16Test, EncodeSuccess) {
   auto [value, match] = GetParam();
   ScaleEncoderStream s;
   ASSERT_NO_THROW((s << value));
-  ASSERT_EQ(s.data(), match);
+  ASSERT_EQ(s.to_vector(), match);
 }
 
 /**
@@ -182,7 +182,7 @@ TEST_P(Int32Test, EncodeSuccess) {
   auto [value, match] = GetParam();
   ScaleEncoderStream s;
   ASSERT_NO_THROW((s << value));
-  ASSERT_EQ(s.data(), match);
+  ASSERT_EQ(s.to_vector(), match);
 }
 
 /**
@@ -218,7 +218,7 @@ TEST_P(Uint32Test, EncodeSuccess) {
   auto [value, match] = GetParam();
   ScaleEncoderStream s;
   ASSERT_NO_THROW((s << value));
-  ASSERT_EQ(s.data(), match);
+  ASSERT_EQ(s.to_vector(), match);
 }
 
 /**
@@ -253,7 +253,7 @@ TEST_P(Int64Test, EncodeSuccess) {
   auto [value, match] = GetParam();
   ScaleEncoderStream s;
   ASSERT_NO_THROW((s << value));
-  ASSERT_EQ(s.data(), match);
+  ASSERT_EQ(s.to_vector(), match);
 }
 
 /**
@@ -289,7 +289,7 @@ TEST_P(Uint64Test, EncodeSuccess) {
   auto [value, match] = GetParam();
   ScaleEncoderStream s;
   ASSERT_NO_THROW((s << value));
-  ASSERT_EQ(s.data(), match);
+  ASSERT_EQ(s.to_vector(), match);
 }
 
 /**

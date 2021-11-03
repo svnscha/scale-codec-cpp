@@ -16,7 +16,7 @@ using scale::EncodeError;
 using scale::ScaleDecoderStream;
 using scale::ScaleEncoderStream;
 
-// TODO(yuraz): PRE-119 refactor to parameterized tests
+// TODO(Harrm): PRE-119 refactor to parameterized tests
 /**
  * @given variety of optional values
  * @when encodeOptional function is applied
@@ -27,42 +27,42 @@ TEST(Scale, encodeOptional) {
   {
     ScaleEncoderStream s;
     ASSERT_NO_THROW((s << std::optional<uint8_t>{std::nullopt}));
-    ASSERT_EQ(s.data(), (ByteArray{0}));
+    ASSERT_EQ(s.to_vector(), (ByteArray{0}));
   }
 
   // encode existing uint8_t
   {
     ScaleEncoderStream s;
     ASSERT_NO_THROW((s << std::optional<uint8_t>{1}));
-    ASSERT_EQ(s.data(), (ByteArray{1, 1}));
+    ASSERT_EQ(s.to_vector(), (ByteArray{1, 1}));
   }
 
   // encode negative int8_t
   {
     ScaleEncoderStream s;
     ASSERT_NO_THROW((s << std::optional<int8_t>{-1}));
-    ASSERT_EQ(s.data(), (ByteArray{1, 255}));
+    ASSERT_EQ(s.to_vector(), (ByteArray{1, 255}));
   }
 
   // encode non-existing uint16_t
   {
     ScaleEncoderStream s;
     ASSERT_NO_THROW((s << std::optional<uint16_t>{std::nullopt}));
-    ASSERT_EQ(s.data(), (ByteArray{0}));
+    ASSERT_EQ(s.to_vector(), (ByteArray{0}));
   }
 
   // encode existing uint16_t
   {
     ScaleEncoderStream s;
     ASSERT_NO_THROW((s << std::optional<uint16_t>{511}));
-    ASSERT_EQ(s.data(), (ByteArray{1, 255, 1}));
+    ASSERT_EQ(s.to_vector(), (ByteArray{1, 255, 1}));
   }
 
   // encode existing uint32_t
   {
     ScaleEncoderStream s;
     ASSERT_NO_THROW((s << std::optional<uint32_t>{67305985}));
-    ASSERT_EQ(s.data(), (ByteArray{1, 1, 2, 3, 4}));
+    ASSERT_EQ(s.to_vector(), (ByteArray{1, 1, 2, 3, 4}));
   }
 }
 
@@ -147,7 +147,7 @@ TEST(ScaleTest, EncodeOptionalBoolSuccess) {
   for (auto &&v : values) {
     ASSERT_NO_THROW((s << v));
   }
-  ASSERT_EQ(s.data(), (ByteArray{1, 2, 0}));
+  ASSERT_EQ(s.to_vector(), (ByteArray{1, 2, 0}));
 }
 
 /**

@@ -44,16 +44,11 @@ TYPED_TEST(EnumTest, ConsistentEncodingDecoding) {
   SCOPED_TRACE(TestFixture::enum_name);
   for (auto const &param : TestFixture::values) {
     ScaleEncoderStream encoder{};
-    std::cout << "=================\n";
-    std::cout << "Input is "  << static_cast<std::underlying_type_t<TypeParam>>(param) << "\n";
     ASSERT_NO_THROW((encoder << param));
-    std::cout << "Encoder data is " << scale::hex_lower(encoder.data()) << "\n";
 
-    ScaleDecoderStream decoder{encoder.data()};
-    std::cout << "Decoder data is " << scale::hex_lower(decoder.span()) << "\n";
+    ScaleDecoderStream decoder{encoder.to_vector()};
     TypeParam decoded_value;
     ASSERT_NO_THROW((decoder >> decoded_value));
-    std::cout << "Decoded is " << static_cast<std::underlying_type_t<TypeParam>>(decoded_value) << "\n";
 
     EXPECT_EQ(decoded_value, param);
   }
@@ -64,10 +59,10 @@ TYPED_TEST(EnumTest, CorrectEncoding) {
     SCOPED_TRACE(TestFixture::enum_name);
     ScaleEncoderStream encoder{};
     ASSERT_NO_THROW((encoder << param));
-    ScaleDecoderStream decoder{encoder.data()};
+    ScaleDecoderStream decoder{encoder.to_vector()};
     std::underlying_type_t<TypeParam> decoded_value;
     ASSERT_NO_THROW((decoder >> decoded_value));
-    ASSERT_EQ(decoded_value,
+    EXPECT_EQ(decoded_value,
               static_cast<std::underlying_type_t<TypeParam>>(param));
   }
 }
