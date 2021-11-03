@@ -45,15 +45,17 @@ TYPED_TEST(EnumTest, ConsistentEncodingDecoding) {
   for (auto const &param : TestFixture::values) {
     ScaleEncoderStream encoder{};
     std::cout << "=================\n";
-    encoder << param;
-    std::cout << static_cast<std::underlying_type_t<TypeParam>>(param) << "\n";
-    std::cout << scale::hex_lower(encoder.data()) << "\n";
-    //ASSERT_NO_THROW((encoder << param));
+    std::cout << "Input is "  << static_cast<std::underlying_type_t<TypeParam>>(param) << "\n";
+    ASSERT_NO_THROW((encoder << param));
+    std::cout << "Encoder data is " << scale::hex_lower(encoder.data()) << "\n";
+
     ScaleDecoderStream decoder{encoder.data()};
+    std::cout << "Decoder data is " << scale::hex_lower(decoder.span()) << "\n";
     TypeParam decoded_value;
     ASSERT_NO_THROW((decoder >> decoded_value));
-    std::cout << static_cast<std::underlying_type_t<TypeParam>>(decoded_value) << "\n";
-    ASSERT_EQ(decoded_value, param);
+    std::cout << "Decoded is " << static_cast<std::underlying_type_t<TypeParam>>(decoded_value) << "\n";
+
+    EXPECT_EQ(decoded_value, param);
   }
 }
 
