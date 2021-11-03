@@ -43,13 +43,12 @@ TYPED_TEST(EnumTest, ConsistentEncodingDecoding) {
   for (auto const &param : TestFixture::values) {
     SCOPED_TRACE(TestFixture::enum_name);
     ScaleEncoderStream encoder{};
-    auto &value = param;
-    encoder << value;
-    //ASSERT_NO_THROW((encoder << value));
+    encoder << param;
+    //ASSERT_NO_THROW((encoder << param));
     ScaleDecoderStream decoder{encoder.data()};
     TypeParam decoded_value;
     ASSERT_NO_THROW((decoder >> decoded_value));
-    ASSERT_EQ(decoded_value, value);
+    ASSERT_EQ(decoded_value, param);
   }
 }
 
@@ -57,8 +56,7 @@ TYPED_TEST(EnumTest, CorrectEncoding) {
   for (auto const &param : TestFixture::values) {
     SCOPED_TRACE(TestFixture::enum_name);
     ScaleEncoderStream encoder{};
-    auto &value = param;
-    ASSERT_NO_THROW((encoder << value));
+    ASSERT_NO_THROW((encoder << param));
     ScaleDecoderStream decoder{encoder.data()};
     std::underlying_type_t<TypeParam> decoded_value;
     ASSERT_NO_THROW((decoder >> decoded_value));

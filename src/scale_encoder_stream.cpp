@@ -41,6 +41,7 @@ inline void encodeThirdCategory(uint32_t value, ScaleEncoderStream &out) {
  */
 void encodeCompactInteger(const CompactInteger &value,
                           ScaleEncoderStream &out) {
+  throw std::runtime_error{"AAAAAAA"};
   // cannot encode negative numbers
   // there is no description how to encode compact negative numbers
   if (value < 0) {
