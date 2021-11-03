@@ -46,7 +46,8 @@ TYPED_TEST(EnumTest, ConsistentEncodingDecoding) {
     ScaleEncoderStream encoder{};
     ASSERT_NO_THROW((encoder << param));
 
-    ScaleDecoderStream decoder{encoder.to_vector()};
+    auto v = encoder.to_vector();
+    ScaleDecoderStream decoder{v};
     TypeParam decoded_value;
     ASSERT_NO_THROW((decoder >> decoded_value));
 
@@ -59,7 +60,8 @@ TYPED_TEST(EnumTest, CorrectEncoding) {
     SCOPED_TRACE(TestFixture::enum_name);
     ScaleEncoderStream encoder{};
     ASSERT_NO_THROW((encoder << param));
-    ScaleDecoderStream decoder{encoder.to_vector()};
+    auto v = encoder.to_vector();
+    ScaleDecoderStream decoder{v};
     std::underlying_type_t<TypeParam> decoded_value;
     ASSERT_NO_THROW((decoder >> decoded_value));
     EXPECT_EQ(decoded_value,
