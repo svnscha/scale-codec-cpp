@@ -30,6 +30,9 @@ TYPED_TEST_CASE(EnumTest, MyTypes);
 
 template <>
 const std::string EnumTest<Foo>::enum_name{"Foo"};
+
+SCALE_SPECIALIZE_MINMAX_ENUM_TRAITS(Foo, Foo::A, Foo::C);
+
 template <>
 const std::vector<Foo> EnumTest<Foo>::values{Foo::A, Foo::B, Foo::C};
 
@@ -37,6 +40,8 @@ template <>
 const std::string EnumTest<Bar>::enum_name{"Bar"};
 template <>
 const std::vector<Bar> EnumTest<Bar>::values{Bar::A, Bar::B, Bar::C};
+
+SCALE_SPECIALIZE_VALUE_LIST_ENUM_TRAITS(Bar, Bar::A, Bar::B, Bar::C);
 
 TYPED_TEST(EnumTest, ConsistentEncodingDecoding) {
   SCOPED_TRACE(TestFixture::enum_name);
@@ -55,7 +60,6 @@ TYPED_TEST(EnumTest, ConsistentEncodingDecoding) {
 
 TYPED_TEST(EnumTest, CorrectEncoding) {
   for (auto const &param : TestFixture::values) {
-    SCOPED_TRACE(TestFixture::enum_name);
     ScaleEncoderStream encoder{};
     ASSERT_NO_THROW((encoder << param));
     auto v = encoder.to_vector();
@@ -64,5 +68,38 @@ TYPED_TEST(EnumTest, CorrectEncoding) {
     ASSERT_NO_THROW((decoder >> decoded_value));
     EXPECT_EQ(decoded_value,
               static_cast<std::underlying_type_t<TypeParam>>(param));
+  }
+}
+
+template <typename T>
+class InvalidEnumTest : public ::testing::Test {
+ public:
+ protected:
+  const static std::string enum_name;
+  const static std::vector<std::underlying_type_t<T>> invalid_values;
+};
+
+template <>
+const std::string InvalidEnumTest<Foo>::enum_name{"Foo"};
+template <>
+const std::vector<uint16_t> InvalidEnumTest<Foo>::invalid_values{11, 22, 33};
+
+template <>
+const std::string InvalidEnumTest<Bar>::enum_name{"Bar"};
+template <>
+const std::vector<int64_t> InvalidEnumTest<Bar>::invalid_values{1, 2, 3};
+
+using MyTypes = ::testing::Types<Foo, Bar>;
+TYPED_TEST_CASE(InvalidEnumTest, MyTypes);
+
+TYPED_TEST(InvalidEnumTest, ThrowsOnInvalidValue) {
+  for (auto const &param : TestFixture::invalid_values) {
+    ScaleEncoderStream encoder{};
+    ASSERT_NO_THROW((encoder << param));
+    auto v = encoder.to_vector();
+    ScaleDecoderStream decoder{v};
+    TypeParam decoded_value;
+    ASSERT_THROW((decoder >> decoded_value),
+                 std::runtime_error);
   }
 }

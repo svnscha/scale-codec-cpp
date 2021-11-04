@@ -8,11 +8,11 @@ cmake_minimum_required(VERSION 3.12)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/HunterGate.cmake)
 set(HUNTER_STATUS_DEBUG ON)
 HunterGate(
-        URL  https://github.com/soramitsu/soramitsu-hunter/archive/9ca72322e8d9de70d360dc7f371b223d32999123.zip
-        SHA1 37cc1150526fb9c5dcf197f918e5d9aab611823f
+    URL https://github.com/soramitsu/soramitsu-hunter/archive/9ca72322e8d9de70d360dc7f371b223d32999123.zip
+    SHA1 37cc1150526fb9c5dcf197f918e5d9aab611823f
 )
 
-project(Scale CXX)
+project(Scale LANGUAGES CXX VERSION 1.0.0)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -33,7 +33,7 @@ add_subdirectory(src)
 if (BUILD_TESTS)
     enable_testing()
     add_subdirectory(test ${CMAKE_BINARY_DIR}/tests_bin)
-endif()
+endif ()
 
 ###############################################################################
 #   INSTALLATION
@@ -53,6 +53,18 @@ install(TARGETS scale buffer scale_encode_append EXPORT scaleConfig
 install(
     DIRECTORY ${CMAKE_SOURCE_DIR}/include/scale
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+include(CMakePackageConfigHelpers)
+
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/scaleConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion
+)
+
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/scaleConfigVersion.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/scale
 )
 
 install(
