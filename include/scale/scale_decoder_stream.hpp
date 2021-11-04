@@ -334,22 +334,24 @@ namespace scale {
     static_assert(std::is_enum_v<E>);
 
     // to easily detect an unspecialized enum_traits
-    using is_default = std::true_type;
+    static constexpr bool is_default = true;
   };
 
-#define SCALE_SPECIALIZE_MINMAX_ENUM_TRAITS(enum_name, min, max)            \
+#define SCALE_SPECIALIZE_MINMAX_ENUM_TRAITS(                                \
+    enum_namespace, enum_name, min, max)                                    \
   template <>                                                               \
-  struct ::scale::enum_traits<enum_name> final {                            \
-    using underlying = std::underlying_type_t<enum_name>;                   \
+  struct scale::enum_traits<enum_namespace::enum_name> final {              \
+    using underlying = std::underlying_type_t<enum_namespace::enum_name>;   \
     static constexpr underlying min_value = static_cast<underlying>((min)); \
     static constexpr underlying max_value = static_cast<underlying>((max)); \
   };
 
 // Mind that values should be enum constants, not numbers
-#define SCALE_SPECIALIZE_VALUE_LIST_ENUM_TRAITS(enum_name, ...) \
-  template <>                                                   \
-  struct ::scale::enum_traits<enum_name> final {                \
-    static constexpr enum_name valid_values[] = {__VA_ARGS__};  \
+#define SCALE_SPECIALIZE_VALUE_LIST_ENUM_TRAITS(                               \
+    enum_namespace, enum_name, ...)                                            \
+  template <>                                                                  \
+  struct scale::enum_traits<enum_namespace::enum_name> final {                 \
+    static constexpr enum_namespace::enum_name valid_values[] = {__VA_ARGS__}; \
   };
 
   template <typename T,
@@ -366,7 +368,7 @@ namespace scale {
             typename E_traits = enum_traits<E>,
             typename = decltype(E_traits::valid_values)>
   constexpr bool is_valid_enum_value(std::underlying_type_t<E> value) noexcept {
-    const auto& valid_values = E_traits::valid_values;
+    const auto &valid_values = E_traits::valid_values;
     return std::find(std::begin(valid_values),
                      std::end(valid_values),
                      static_cast<E>(value))
