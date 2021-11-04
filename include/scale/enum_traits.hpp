@@ -9,6 +9,7 @@
 #include <type_traits>
 
 #include <scale/outcome/outcome_throw.hpp>
+#include <scale/scale_error.hpp>
 
 namespace scale {
 
