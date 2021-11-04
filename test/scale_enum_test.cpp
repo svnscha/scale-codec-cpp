@@ -7,6 +7,7 @@
 
 #include <scale/scale_decoder_stream.hpp>
 #include <scale/scale_encoder_stream.hpp>
+#include <scale/enum_traits.hpp>
 #include <scale/types.hpp>
 
 using scale::ByteArray;

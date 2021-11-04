@@ -15,6 +15,7 @@
 #include <scale/outcome/outcome.hpp>
 #include <scale/scale_decoder_stream.hpp>
 #include <scale/scale_encoder_stream.hpp>
+#include <scale/enum_traits.hpp>
 
 #define SCALE_EMPTY_DECODER(TargetType)                             \
   template <typename Stream,                                        \
