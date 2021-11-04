@@ -8,6 +8,8 @@
 
 #include <type_traits>
 
+#include <scale/outcome/outcome_throw.hpp>
+
 namespace scale {
 
   /**
@@ -29,7 +31,7 @@ namespace scale {
     static constexpr bool is_default = true;
   };
 
-#define SCALE_DEFINE_ENUM_RANGE(enum_namespace, enum_name, min, max)        \
+#define SCALE_DEFINE_ENUM_VALUE_RANGE(enum_namespace, enum_name, min, max)        \
   template <>                                                               \
   struct scale::enum_traits<enum_namespace::enum_name> final {              \
     using underlying = std::underlying_type_t<enum_namespace::enum_name>;   \
@@ -38,7 +40,7 @@ namespace scale {
   };
 
 // Mind that values should be enum constants, not numbers
-#define SCALE_DEFINE_ENUM_VALUES(enum_namespace, enum_name, ...)               \
+#define SCALE_DEFINE_ENUM_VALUE_LIST(enum_namespace, enum_name, ...)               \
   template <>                                                                  \
   struct scale::enum_traits<enum_namespace::enum_name> final {                 \
     static constexpr enum_namespace::enum_name valid_values[] = {__VA_ARGS__}; \

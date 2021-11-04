@@ -32,7 +32,7 @@ TYPED_TEST_CASE(EnumTest, MyTypes);
 template <>
 const std::string EnumTest<Foo>::enum_name{"Foo"};
 
-SCALE_SPECIALIZE_MINMAX_ENUM_TRAITS(, Foo, Foo::A, Foo::C);
+SCALE_DEFINE_ENUM_VALUE_RANGE(, Foo, Foo::A, Foo::C);
 
 template <>
 const std::vector<Foo> EnumTest<Foo>::values{Foo::A, Foo::B, Foo::C};
@@ -42,7 +42,7 @@ const std::string EnumTest<Bar>::enum_name{"Bar"};
 template <>
 const std::vector<Bar> EnumTest<Bar>::values{Bar::A, Bar::B, Bar::C};
 
-SCALE_SPECIALIZE_VALUE_LIST_ENUM_TRAITS(, Bar, Bar::A, Bar::B, Bar::C);
+SCALE_DEFINE_ENUM_VALUE_LIST(, Bar, Bar::A, Bar::B, Bar::C);
 
 TYPED_TEST(EnumTest, ConsistentEncodingDecoding) {
   SCOPED_TRACE(TestFixture::enum_name);
