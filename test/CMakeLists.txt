@@ -10,7 +10,6 @@ endif ()
 
 hunter_add_package(GTest)
 find_package(GTest CONFIG REQUIRED)
-find_package(GMock CONFIG REQUIRED)
 
 function(disable_clang_tidy target)
     set_target_properties(${target} PROPERTIES
@@ -26,7 +25,7 @@ function(addtest test_name)
             )
     target_link_libraries(${test_name}
             GTest::main
-            GMock::main
+            GTest::gmock_main
             )
     target_include_directories(${test_name} PRIVATE
             ${PROJECT_SOURCE_DIR}/include
