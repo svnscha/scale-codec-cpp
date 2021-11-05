@@ -8,8 +8,8 @@ cmake_minimum_required(VERSION 3.12)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/HunterGate.cmake)
 set(HUNTER_STATUS_DEBUG ON)
 HunterGate(
-    URL https://github.com/soramitsu/soramitsu-hunter/archive/9ca72322e8d9de70d360dc7f371b223d32999123.zip
-    SHA1 37cc1150526fb9c5dcf197f918e5d9aab611823f
+    URL https://github.com/soramitsu/soramitsu-hunter/tree/v0.23.257-soramitsu17
+    SHA1 d04949fb0ae4b21d7e71374666ed301e8b83e7e9
 )
 
 project(Scale LANGUAGES CXX VERSION 1.0.0)
