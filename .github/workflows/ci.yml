@@ -36,7 +36,7 @@ jobs:
       matrix:
         options:
           - name: "Linux: gcc-9"
-            run: ./scripts/build.sh -DCMAKE_CXX_COMPIILER=g++-9
+            run: ./scripts/build.sh -DCMAKE_CXX_COMPILER=g++-9
           - name: "Linux: clang-10"
             run: ./scripts/build.sh -DCMAKE_CXX_COMPILER=clang++-10
     name: "${{ matrix.options.name }}"

@@ -30,6 +30,8 @@ OUTCOME_CPP_DEFINE_CATEGORY_3(scale, DecodeError, e) {
              "damaged, unable to unpack";
     case DecodeError::WRONG_TYPE_INDEX:
       return "SCALE decode: wrong type index, cannot decode variant";
+    case DecodeError::INVALID_ENUM_VALUE:
+      return "SCALE decode: decoded enum value does not belong to the enum";
   }
   return "unknown SCALE DecodeError";
 }

@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef KAGOME_GTEST_OUTCOME_UTIL_HPP
-#define KAGOME_GTEST_OUTCOME_UTIL_HPP
+#ifndef SCALE_GTEST_OUTCOME_UTIL_HPP
+#define SCALE_GTEST_OUTCOME_UTIL_HPP
 
 #include <gtest/gtest.h>
 
@@ -204,4 +204,4 @@
         << outcome::result<void>(_error_).error().message() << "'";       \
   }
 
-#endif  // KAGOME_GTEST_OUTCOME_UTIL_HPP
+#endif  // SCALE_GTEST_OUTCOME_UTIL_HPP

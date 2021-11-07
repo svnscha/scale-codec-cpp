@@ -10,7 +10,6 @@ endif ()
 
 hunter_add_package(GTest)
 find_package(GTest CONFIG REQUIRED)
-find_package(GMock CONFIG REQUIRED)
 
 function(disable_clang_tidy target)
     set_target_properties(${target} PROPERTIES
@@ -25,8 +24,8 @@ function(addtest test_name)
             ${ARGN}
             )
     target_link_libraries(${test_name}
-            GTest::main
-            GMock::main
+            GTest::gtest
+            GTest::gmock_main
             )
     target_include_directories(${test_name} PRIVATE
             ${PROJECT_SOURCE_DIR}/include
@@ -65,6 +64,14 @@ addtest(scale_compact_test
         scale_compact_test.cpp
         )
 target_link_libraries(scale_compact_test
+        scale
+        buffer
+        )
+
+addtest(scale_enum_test
+        scale_enum_test.cpp
+        )
+target_link_libraries(scale_enum_test
         scale
         buffer
         )

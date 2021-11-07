@@ -111,7 +111,7 @@ ScaleEncoderStream::ScaleEncoderStream()
 ScaleEncoderStream::ScaleEncoderStream(bool drop_data)
             : drop_data_{drop_data}, bytes_written_{0} {}
 
-ByteArray ScaleEncoderStream::data() const {
+ByteArray ScaleEncoderStream::to_vector() const {
   ByteArray buffer(stream_.size(), 0u);
   for (auto &&[it, dest] = std::pair(stream_.begin(), buffer.begin());
        it != stream_.end(); ++it, ++dest) {

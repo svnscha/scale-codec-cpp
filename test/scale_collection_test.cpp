@@ -26,7 +26,7 @@ TEST(Scale, encodeCollectionOf80) {
   match.insert(match.end(), collection.begin(), collection.end());
   ScaleEncoderStream s;
   ASSERT_NO_THROW((s << collection));
-  auto &&out = s.data();
+  auto &&out = s.to_vector();
   ASSERT_EQ(out.size(), 82);
   ASSERT_EQ(out, match);
 }
@@ -40,7 +40,7 @@ TEST(Scale, encodeCollectionUint16) {
   std::vector<uint16_t> collection = {1, 2, 3, 4};
   ScaleEncoderStream s;
   ASSERT_NO_THROW((s << collection));
-  auto &&out = s.data();
+  auto &&out = s.to_vector();
   // clang-format off
   ASSERT_EQ(out,
           (ByteArray{
@@ -63,7 +63,7 @@ TEST(Scale, encodeCollectionUint32) {
                                       252579084};
   ScaleEncoderStream s;
   ASSERT_NO_THROW((s << collection));
-  auto &&out = s.data();
+  auto &&out = s.to_vector();
   // clang-format off
   ASSERT_EQ(out,
             (ByteArray{
@@ -86,7 +86,7 @@ TEST(Scale, encodeCollectionUint64) {
                                       1084818905618843912ull};
   ScaleEncoderStream s;
   ASSERT_NO_THROW((s << collection));
-  auto &&out = s.data();
+  auto &&out = s.to_vector();
   // clang-format off
   ASSERT_EQ(out,
             (ByteArray{
@@ -116,7 +116,7 @@ TEST(Scale, encodeLongCollectionUint16) {
 
   ScaleEncoderStream s;
   ASSERT_NO_THROW((s << collection));
-  auto &&out = s.data();
+  auto &&out = s.to_vector();
   ASSERT_EQ(out.size(), (length * 2 + 4));
 
   // header takes 4 byte,
@@ -163,7 +163,7 @@ TEST(Scale, encodeVeryLongCollectionUint8) {
 
   ScaleEncoderStream s;
   ASSERT_NO_THROW((s << collection));
-  auto &&out = s.data();
+  auto &&out = s.to_vector();
   ASSERT_EQ(out.size(), (length + 4));
   // header takes 4 bytes,
   // first byte == (4-4) + 3 = 3,
@@ -209,7 +209,7 @@ TEST(Scale, DISABLED_encodeVeryLongCollectionUint8) {
 
   ScaleEncoderStream s;
   ASSERT_NO_THROW((s << collection));
-  auto &&out = s.data();
+  auto &&out = s.to_vector();
   ASSERT_EQ(out.size(), (length + 4));
   // header takes 4 bytes,
   // first byte == (4-4) + 3 = 3, which means that number of items

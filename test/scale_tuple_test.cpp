@@ -25,7 +25,7 @@ TEST(Scale, EncodeTupleSuccess) {
 
   ScaleEncoderStream s;
   ASSERT_NO_THROW((s << std::make_tuple(v1, v2, v3)));
-  ASSERT_EQ(s.data(), (expected_bytes));
+  ASSERT_EQ(s.to_vector(), (expected_bytes));
 }
 
 /**

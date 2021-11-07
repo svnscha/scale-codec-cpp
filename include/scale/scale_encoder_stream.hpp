@@ -36,7 +36,7 @@ namespace scale {
     /**
      * @return vector of bytes containing encoded data
      */
-    std::vector<uint8_t> data() const;
+    std::vector<uint8_t> to_vector() const;
 
     /**
      * Get amount of encoded data written to the stream
@@ -284,6 +284,23 @@ namespace scale {
     std::deque<uint8_t> stream_;
     size_t bytes_written_;
   };
+
+  /**
+   * @brief scale-encodes any enum type as its underlying type
+   * Defined outside ScaleEncoderStream to allow custom overloads for
+   * specific enum types.
+   * @tparam T enum type
+   * @param v value of the enum type
+   * @return reference to stream
+   */
+  template <typename S,
+            typename T,
+            typename E = std::decay_t<T>,
+            typename = std::enable_if_t<S::is_encoder_stream>,
+            typename = std::enable_if_t<std::is_enum_v<E>>>
+  S &operator<<(S &s, const T &v) {
+    return s << static_cast<std::underlying_type_t<E>>(v);
+  }
 
 }  // namespace scale
 

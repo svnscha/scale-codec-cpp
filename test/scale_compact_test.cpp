@@ -41,7 +41,7 @@ class CompactTest
 TEST_P(CompactTest, EncodeSuccess) {
   const auto &[value, match] = GetParam();
   ASSERT_NO_THROW(s << value);
-  ASSERT_EQ(s.data(), match);
+  ASSERT_EQ(s.to_vector(), match);
 }
 
 /**
@@ -128,7 +128,7 @@ TEST(ScaleCompactTest, EncodeNegativeIntegerFails) {
   CompactInteger v(-1);
   ScaleEncoderStream out{};
   ASSERT_ANY_THROW((out << v));
-  ASSERT_EQ(out.data().size(), 0);  // nothing was written to buffer
+  ASSERT_EQ(out.to_vector().size(), 0);  // nothing was written to buffer
 }
 
 /**
@@ -147,7 +147,7 @@ TEST(ScaleCompactTest, EncodeOutOfRangeBigIntegerFails) {
 
   ScaleEncoderStream out;
   ASSERT_ANY_THROW((out << v));     // value is too big, it is not encoded
-  ASSERT_EQ(out.data().size(), 0);  // nothing was written to buffer
+  ASSERT_EQ(out.to_vector().size(), 0);  // nothing was written to buffer
 }
 
 /**
