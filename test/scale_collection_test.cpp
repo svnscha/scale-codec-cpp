@@ -32,6 +32,37 @@ TEST(Scale, encodeCollectionOf80) {
 }
 
 /**
+ * @given vector of bools
+ * @when encodeCollection is applied
+ * @then expected result is obtained: header is 2 byte, items are 1 byte each
+ */
+TEST(Scale, encodeVectorOfBool) {
+  std::vector<bool> collection = {true, false, true, false, false, false};
+  ScaleEncoderStream s;
+  ASSERT_NO_THROW((s << collection));
+  auto &&out = s.to_vector();
+
+  auto stream = ScaleDecoderStream(gsl::make_span(out));
+  std::vector<bool> decoded;
+  stream >> decoded;
+  ASSERT_TRUE(std::equal(
+      decoded.begin(), decoded.end(), collection.begin(), collection.end()));
+
+  // clang-format off
+  ASSERT_EQ(out,
+          (ByteArray{
+            24, // header
+            1,  // first item
+            0,  // second item
+            1,  // third item
+            0,  // fourth item
+            0,  // fifth item
+            0   // sixths item
+              }));
+  // clang-format on
+}
+
+/**
  * @given collection of items of type uint16_t
  * @when encodeCollection is applied
  * @then expected result is obtained
@@ -41,6 +72,79 @@ TEST(Scale, encodeCollectionUint16) {
   ScaleEncoderStream s;
   ASSERT_NO_THROW((s << collection));
   auto &&out = s.to_vector();
+
+  auto stream = ScaleDecoderStream(gsl::make_span(out));
+  std::vector<uint16_t> decoded;
+  stream >> decoded;
+  ASSERT_TRUE(std::equal(
+      decoded.begin(), decoded.end(), collection.begin(), collection.end()));
+
+  // clang-format off
+  ASSERT_EQ(out,
+          (ByteArray{
+              16,  // header
+            1, 0,  // first item
+            2, 0,  // second item
+            3, 0,  // third item
+            4, 0  // fourth item
+              }));
+  // clang-format on
+}
+
+struct TestStruct : std::vector<uint16_t> {
+  static constexpr bool is_static_collection = false;
+};
+/**
+ * @given collection of items of type uint16_t, derived from std::vector
+ * @when encodeCollection is applied
+ * @then expected result is obtained
+ */
+TEST(Scale, encodeDerivedCollectionUint16) {
+  TestStruct collection;
+  collection.push_back(1);
+  collection.push_back(2);
+  collection.push_back(3);
+  collection.push_back(4);
+
+  ScaleEncoderStream s;
+  ASSERT_NO_THROW((s << collection));
+  auto &&out = s.to_vector();
+
+  auto stream = ScaleDecoderStream(gsl::make_span(out));
+  TestStruct decoded;
+  stream >> decoded;
+  ASSERT_TRUE(std::equal(
+      decoded.begin(), decoded.end(), collection.begin(), collection.end()));
+
+  // clang-format off
+  ASSERT_EQ(out,
+          (ByteArray{
+              16,  // header
+            1, 0,  // first item
+            2, 0,  // second item
+            3, 0,  // third item
+            4, 0  // fourth item
+              }));
+  // clang-format on
+}
+
+/**
+ * @given collection of items of type uint16_t
+ * @when encodeCollection is applied
+ * @then expected result is obtained
+ */
+TEST(Scale, encodeDequeUint16) {
+  std::deque<uint16_t> collection = {1, 2, 3, 4};
+  ScaleEncoderStream s;
+  ASSERT_NO_THROW((s << collection));
+  auto &&out = s.to_vector();
+
+  auto stream = ScaleDecoderStream(gsl::make_span(out));
+  std::deque<uint16_t> decoded;
+  stream >> decoded;
+  ASSERT_TRUE(std::equal(
+      decoded.begin(), decoded.end(), collection.begin(), collection.end()));
+
   // clang-format off
   ASSERT_EQ(out,
           (ByteArray{
@@ -59,8 +163,8 @@ TEST(Scale, encodeCollectionUint16) {
  * @then expected result is obtained
  */
 TEST(Scale, encodeCollectionUint32) {
-  std::vector<uint32_t> collection = {50462976, 117835012, 185207048,
-                                      252579084};
+  std::vector<uint32_t> collection = {
+      50462976, 117835012, 185207048, 252579084};
   ScaleEncoderStream s;
   ASSERT_NO_THROW((s << collection));
   auto &&out = s.to_vector();
@@ -232,4 +336,23 @@ TEST(Scale, DISABLED_encodeVeryLongCollectionUint8) {
   }
 
   ASSERT_EQ(stream.hasMore(1), false);
+}
+
+/**
+ * @given map of <uint32_t, uint32_t>
+ * @when encodeCollection is applied
+ * @then expected result is obtained: header is 2 byte, items are pairs of 4
+ * byte elements each
+ */
+TEST(Scale, encodeMapTest) {
+  std::map<uint32_t, uint32_t> collection = {{1, 5}, {2, 6}, {3, 7}, {4, 8}};
+  ScaleEncoderStream s;
+  ASSERT_NO_THROW((s << collection));
+  auto &&out = s.to_vector();
+
+  auto stream = ScaleDecoderStream(gsl::make_span(out));
+  std::map<uint32_t, uint32_t> decoded;
+  stream >> decoded;
+  ASSERT_TRUE(std::equal(
+      decoded.begin(), decoded.end(), collection.begin(), collection.end()));
 }

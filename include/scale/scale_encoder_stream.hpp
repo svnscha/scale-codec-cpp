@@ -45,6 +45,93 @@ namespace scale {
     size_t size() const;
 
     /**
+     * @brief scale-encodes std::vector
+     * @tparam T type of item
+     * @param c collection to encode
+     * @return reference to stream
+     */
+    template <typename T>
+    ScaleEncoderStream &operator<<(const std::vector<T> &c) {
+      return encodeDynamicCollection(std::size(c), std::begin(c), std::end(c));
+    }
+    /**
+     * @brief scale-encodes std::deque
+     * @tparam T type of item
+     * @param c collection to encode
+     * @return reference to stream
+     */
+    template <typename T>
+    ScaleEncoderStream &operator<<(const std::deque<T> &c) {
+      return encodeDynamicCollection(std::size(c), std::begin(c), std::end(c));
+    }
+    /**
+     * @brief scale-encodes std::list
+     * @tparam T type of item
+     * @param c collection to encode
+     * @return reference to stream
+     */
+    template <typename T>
+    ScaleEncoderStream &operator<<(const std::list<T> &c) {
+      return encodeDynamicCollection(std::size(c), std::begin(c), std::end(c));
+    }
+    /**
+     * @brief scale-encodes std::map
+     * @tparam K key type
+     * @tparam V mapped type
+     * @param c collection to encode
+     * @return reference to stream
+     */
+    template <typename K, typename V>
+    ScaleEncoderStream &operator<<(const std::map<K, V> &c) {
+      return encodeDynamicCollection(std::size(c), std::begin(c), std::end(c));
+    }
+
+    /**
+     * @brief scale-encodes gsl::span
+     * @tparam T type of item
+     * @tparam S container size (-1 for dynamic)
+     * @param span span to encode
+     * @return reference to stream
+     */
+    template <typename T, ssize_t S>
+    ScaleEncoderStream &operator<<(const gsl::span<T, S> &span) {
+      if constexpr (S == -1) {
+        return encodeDynamicCollection(
+            std::size(span), std::begin(span), std::end(span));
+      } else {
+        return encodeStaticCollection(span);
+      }
+    }
+
+    /**
+     * @brief scale-encodes collection of same type items, requires bool tag
+     * is_static_collection
+     * @tparam C container type, T type of item
+     * @param c collection to encode
+     * @return reference to stream
+     */
+    template <class C,
+              typename T = typename C::value_type,
+              typename = std::enable_if_t<C::is_static_collection
+                                          || !C::is_static_collection>>
+    ScaleEncoderStream &operator<<(const C &c) {
+      if constexpr (C::is_static_collection) {
+        return encodeStaticCollection(c);
+      } else {
+        return encodeDynamicCollection(
+            std::size(c), std::begin(c), std::end(c));
+      }
+    }
+
+    ScaleEncoderStream &operator<<(const std::vector<bool> &v) {
+      *this << CompactInteger{v.size()};
+      for (bool el : v) {
+        *this << el;
+      }
+      return *this;
+    }
+
+    /**
      * @brief scale-encodes pair of values
      * @tparam F first value type
      * @tparam S second value type
@@ -111,28 +198,6 @@ namespace scale {
     }
 
     /**
-     * @brief scale-encodes collection of same time items
-     * @tparam T type of item
-     * @param c collection to encode
-     * @return reference to stream
-     */
-    template <class T>
-    ScaleEncoderStream &operator<<(const std::vector<T> &c) {
-      return encodeCollection(c.size(), c.begin(), c.end());
-    }
-
-    /**
-     * @brief scale-encodes collection of same time items
-     * @tparam T type of item
-     * @param c collection to encode
-     * @return reference to stream
-     */
-    template <class T>
-    ScaleEncoderStream &operator<<(const std::list<T> &c) {
-      return encodeCollection(c.size(), c.begin(), c.end());
-    }
-
-    /**
      * @brief scale-encodes optional value
      * @tparam T value type
      * @param v value to encode
@@ -153,16 +218,6 @@ namespace scale {
     }
 
     /**
-     * @brief appends sequence of bytes
-     * @param v bytes sequence
-     * @return reference to stream
-     */
-    template <class T>
-    ScaleEncoderStream &operator<<(const gsl::span<T> &v) {
-      return encodeCollection(v.size(), v.begin(), v.end());
-    }
-
-    /**
      * @brief scale-encodes array of items
      * @tparam T item type
      * @tparam size of the array
@@ -171,10 +226,7 @@ namespace scale {
      */
     template <typename T, size_t size>
     ScaleEncoderStream &operator<<(const std::array<T, size> &a) {
-      for (const auto &e : a) {
-        *this << e;
-      }
-      return *this;
+      return encodeStaticCollection(a);
     }
 
     /**
@@ -194,7 +246,7 @@ namespace scale {
      * @return reference to stream
      */
     ScaleEncoderStream &operator<<(std::string_view sv) {
-      return encodeCollection(sv.size(), sv.begin(), sv.end());
+      return encodeDynamicCollection(sv.size(), sv.begin(), sv.end());
     }
 
     /**
@@ -251,7 +303,7 @@ namespace scale {
     }
 
     /**
-     * @brief scale-encodes any collection
+     * @brief scale-encodes any dynamic collection
      * @tparam It iterator over collection of bytes
      * @param size size of the collection
      * @param begin iterator pointing to the begin of collection
@@ -259,13 +311,27 @@ namespace scale {
      * @return reference to stream
      */
     template <class It>
-    ScaleEncoderStream &encodeCollection(const CompactInteger &size,
-                                         It &&begin,
-                                         It &&end) {
+    ScaleEncoderStream &encodeDynamicCollection(const CompactInteger &size,
+                                                It &&begin,
+                                                It &&end) {
       *this << size;
       // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
       for (auto &&it = begin; it != end; ++it) {
         *this << *it;
+      }
+      return *this;
+    }
+
+    /**
+     * @brief scale-encodes any fixed-size collection (std::array)
+     * @tparam C collection type
+     * @param c collection
+     * @return reference to stream
+     */
+    template <class C>
+    ScaleEncoderStream &encodeStaticCollection(const C &c) {
+      for (const auto &e : c) {
+        *this << e;
       }
       return *this;
     }

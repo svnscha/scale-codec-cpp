@@ -7,15 +7,18 @@
 #define SCALE_CORE_SCALE_SCALE_DECODER_STREAM_HPP
 
 #include <array>
+#include <iterator>
 #include <optional>
 
 #include <boost/variant.hpp>
 #include <gsl/span>
 
 #include <scale/detail/fixed_width_integer.hpp>
+#include <type_traits>
+#include <utility>
+#include "scale/types.hpp"
 
 namespace scale {
-
   class ScaleDecoderStream {
    public:
     // special tag to differentiate decoding streams from others
@@ -168,15 +171,69 @@ namespace scale {
     ScaleDecoderStream &operator>>(CompactInteger &v);
 
     /**
-     * @brief decodes vector of items
-     * @tparam T item type
-     * @param v reference to vector
+     * @brief decodes custom container with is_static_collection bool class
+     * member
+     * @tparam C container type
+     * @param c reference to container
      * @return reference to stream
      */
-    template <class T>
-    ScaleDecoderStream &operator>>(std::vector<T> &v) {
+    template <class C,
+              typename T = typename C::value_type,
+              typename S = typename C::size_type,
+              typename = std::enable_if_t<C::is_static_collection
+                                          || !C::is_static_collection>>
+    ScaleDecoderStream &operator>>(C &c) {
       using mutableT = std::remove_const_t<T>;
-      using size_type = typename std::list<T>::size_type;
+      using size_type = S;
+
+      static_assert(std::is_default_constructible_v<mutableT>);
+
+      if constexpr (C::is_static_collection) {
+        C container;
+        for (auto &el : container) {
+          *this >> el;
+        }
+
+        c = std::move(container);
+        return *this;
+      } else {
+        return decodeVectorLike(c);
+      }
+    }
+
+    /**
+     * @brief decodes vector
+     * @tparam T item type
+     * @param v reference to container
+     * @return reference to stream
+     */
+    template <typename T>
+    ScaleDecoderStream &operator>>(std::vector<T> &v) {
+      return decodeVectorLike(v);
+    }
+    /**
+     * @brief decodes deque
+     * @tparam T item type
+     * @param v reference to container
+     * @return reference to stream
+     */
+    template <typename T>
+    ScaleDecoderStream &operator>>(std::deque<T> &v) {
+      return decodeVectorLike(v);
+    }
+
+    /**
+     * @brief decodes random access resizable container
+     * @tparam T item type
+     * @param v reference to container
+     * @return reference to stream
+     */
+    template <class C,
+              typename T = typename C::value_type,
+              typename S = typename C::size_type>
+    ScaleDecoderStream &decodeVectorLike(C &v) {
+      using mutableT = std::remove_const_t<T>;
+      using size_type = S;
 
       static_assert(std::is_default_constructible_v<mutableT>);
 
@@ -185,23 +242,45 @@ namespace scale {
 
       auto item_count = size.convert_to<size_type>();
 
-      std::vector<mutableT> vec;
+      C container;
       try {
-        vec.resize(item_count);
+        container.resize(item_count);
       } catch (const std::bad_alloc &) {
         raise(DecodeError::TOO_MANY_ITEMS);
       }
 
       for (size_type i = 0u; i < item_count; ++i) {
-        *this >> vec[i];
+        *this >> container[i];
       }
 
-      v = std::move(vec);
+      v = std::move(container);
       return *this;
     }
 
     /**
-     * @brief decodes collection of items
+     * @brief Specification for vector<bool>
+     * @param v reference to container
+     * @return reference to stream
+     */
+    ScaleDecoderStream &operator>>(std::vector<bool> &v) {
+      CompactInteger size{0u};
+      *this >> size;
+
+      auto item_count = size.convert_to<size_t>();
+
+      std::vector<bool> container;
+      bool el;
+      for (size_t i = 0u; i < item_count; ++i) {
+        *this >> el;
+        container.push_back(el);
+      }
+
+      v = std::move(container);
+      return *this;
+    }
+
+    /**
+     * @brief decodes list of items
      * @tparam T item type
      * @param v reference to collection
      * @return reference to stream
@@ -230,6 +309,41 @@ namespace scale {
         *this >> lst.back();
       }
       v = std::move(lst);
+      return *this;
+    }
+
+    template <typename, typename U = void>
+    struct is_map_like : std::false_type {};
+
+    template <typename T>
+    struct is_map_like<T,
+                       std::void_t<typename T::key_type,
+                                   typename T::mapped_type,
+                                   decltype(std::declval<T &>()[std::declval<
+                                       const typename T::key_type &>()])>>
+        : std::true_type {};
+
+    /**
+     * @brief decodes associative containers
+     * @tparam C item type
+     * @param c reference to the map
+     * @return reference to stream
+     */
+    template <class C, typename = std::enable_if_t<is_map_like<C>::value>>
+    ScaleDecoderStream &operator>>(C &c) {
+      CompactInteger size{0u};
+      *this >> size;
+
+      auto item_count = size.convert_to<size_t>();
+
+      C container;
+      typename C::value_type pair;
+      for (size_t i = 0u; i < item_count; ++i) {
+        *this >> pair;
+        container.emplace(pair);
+      }
+
+      c = std::move(container);
       return *this;
     }
 
