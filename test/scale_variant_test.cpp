@@ -1,5 +1,6 @@
 /**
- * Copyright Soramitsu Co., Ltd. All Rights Reserved.
+ * Copyright Quadrivium LLC
+ * All Rights Reserved
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -7,7 +8,6 @@
 
 #include "scale/scale.hpp"
 
-#include <gsl/span>
 #include "util/outcome.hpp"
 
 using scale::ByteArray;

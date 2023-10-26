@@ -1,11 +1,10 @@
 /**
- * Copyright Soramitsu Co., Ltd. All Rights Reserved.
+ * Copyright Quadrivium LLC
+ * All Rights Reserved
  * SPDX-License-Identifier: Apache-2.0
  */
 
 #include "scale/scale_decoder_stream.hpp"
-
-#include <gsl/span>
 
 #include "scale/scale_error.hpp"
 #include "scale/types.hpp"
@@ -77,9 +76,6 @@ namespace scale {
     }
   }  // namespace
 
-  ScaleDecoderStream::ScaleDecoderStream(gsl::span<const uint8_t> span)
-      : span_{span}, current_iterator_{span_.begin()}, current_index_{0} {}
-
   std::optional<bool> ScaleDecoderStream::decodeOptionalBool() {
     auto byte = nextByte();
     switch (static_cast<OptionalBool>(byte)) {
@@ -125,14 +121,6 @@ namespace scale {
       ++i;
     }
 
-    return *this;
-  }
-
-  ScaleDecoderStream &ScaleDecoderStream::operator>>(std::string &v) {
-    std::vector<uint8_t> collection;
-    *this >> collection;
-    v.clear();
-    v.append(collection.begin(), collection.end());
     return *this;
   }
 

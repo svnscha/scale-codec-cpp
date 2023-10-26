@@ -1,5 +1,6 @@
 #
-# Copyright Soramitsu Co., Ltd. All Rights Reserved.
+# Copyright Quadrivium LLC
+# All Rights Reserved
 # SPDX-License-Identifier: Apache-2.0
 #
 
@@ -8,13 +9,13 @@ cmake_minimum_required(VERSION 3.12)
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/HunterGate.cmake)
 
 HunterGate(
-    URL  "https://github.com/soramitsu/soramitsu-hunter/archive/v0.23.257-soramitsu42.tar.gz"
-    SHA1 "6f54ad82c2322ff0e234ab96a44a12da1478f1be"
+    URL  https://github.com/qdrvm/hunter/archive/refs/tags/v0.23.257-qdrvm10.tar.gz
+    SHA1 72b446a4424ba28ea90f9a68a9134b0f8e44b5b2
 )
 
-project(Scale LANGUAGES CXX VERSION 1.0.0)
+project(Scale LANGUAGES CXX VERSION 1.1.0)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -24,9 +25,6 @@ option(BUILD_TESTS "Whether to include the test suite in build" OFF)
 
 hunter_add_package(Boost)
 find_package(Boost CONFIG REQUIRED)
-
-hunter_add_package(Microsoft.GSL)
-find_package(Microsoft.GSL CONFIG REQUIRED)
 
 add_subdirectory(src)
 
@@ -41,7 +39,7 @@ endif ()
 
 include(GNUInstallDirs)
 
-install(TARGETS scale buffer scale_encode_append EXPORT scaleConfig
+install(TARGETS scale scale_encode_append EXPORT scaleConfig
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}

@@ -1,14 +1,15 @@
 /**
- * Copyright Soramitsu Co., Ltd. All Rights Reserved.
+ * Copyright Quadrivium LLC
+ * All Rights Reserved
  * SPDX-License-Identifier: Apache-2.0
  */
 
 #include <gtest/gtest.h>
 
-#include <string>
 #include <optional>
+#include <string>
 
-#include "scale/scale_encoder_stream.hpp"
+#include <scale/scale_encoder_stream.hpp>
 
 using scale::ScaleEncoderStream;
 

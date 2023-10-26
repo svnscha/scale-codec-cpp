@@ -1,10 +1,10 @@
 /**
- * Copyright Soramitsu Co., Ltd. All Rights Reserved.
+ * Copyright Quadrivium LLC
+ * All Rights Reserved
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef SCALE_CORE_SCALE_COMPACT_LEN_UTILS_HPP
-#define SCALE_CORE_SCALE_COMPACT_LEN_UTILS_HPP
+#pragma once
 
 #include "scale/types.hpp"
 
@@ -14,7 +14,7 @@ namespace scale::compact {
     size_t counter = 0;
     do {
       ++counter;
-    } while((v >>= 8) != 0);
+    } while ((v >>= 8) != 0);
     return counter;
   }
 
@@ -31,5 +31,3 @@ namespace scale::compact {
     return countBytes(val);
   }
 }  // namespace scale::compact
-
-#endif  // SCALE_CORE_SCALE_COMPACT_LEN_UTILS_HPP

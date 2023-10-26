@@ -1,10 +1,10 @@
 /**
- * Copyright Soramitsu Co., Ltd. All Rights Reserved.
+ * Copyright Quadrivium LLC
+ * All Rights Reserved
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef SCALE_SCALE_DETAIL_VARIANT_HPP
-#define SCALE_SCALE_DETAIL_VARIANT_HPP
+#pragma once
 
 #include <boost/variant.hpp>
 
@@ -37,12 +37,12 @@ namespace scale::detail {
       template <class H>
       void apply(uint8_t index) {
         // if type matches alternative in variant then encode
-        scale::visit_in_place(v_,
-                               [this, index](const H &h) {
-                                 s_ << index
-                                    << h;  // first byte means type index
-                               },
-                               [](const auto & /*unused*/) {});
+        scale::visit_in_place(
+            v_,
+            [this, index](const H &h) {
+              s_ << index << h;  // first byte means type index
+            },
+            [](const auto & /*unused*/) {});
       }
 
      private:
@@ -116,5 +116,3 @@ namespace scale::detail {
   }
 
 }  // namespace scale::detail
-
-#endif  // SCALE_SCALE_DETAIL_VARIANT_HPP

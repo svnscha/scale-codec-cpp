@@ -1,5 +1,6 @@
 /**
- * Copyright Soramitsu Co., Ltd. All Rights Reserved.
+ * Copyright Quadrivium LLC
+ * All Rights Reserved
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -28,7 +29,7 @@ namespace scale {
   }
 
   outcome::result<void> append_or_new_vec(std::vector<uint8_t> &self_encoded,
-                                          gsl::span<const uint8_t> input) {
+                                          ConstSpanOfBytes input) {
     EncodeOpaqueValue opaque_value{.v = input};
 
     // No data present, just encode the given input data.

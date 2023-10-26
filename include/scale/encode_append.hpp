@@ -1,10 +1,10 @@
 /**
- * Copyright Soramitsu Co., Ltd. All Rights Reserved.
+ * Copyright Quadrivium LLC
+ * All Rights Reserved
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef SCALE_CORE_SCALE_ENCODE_APPEND_HPP
-#define SCALE_CORE_SCALE_ENCODE_APPEND_HPP
+#pragma once
 
 #include <scale/scale.hpp>
 
@@ -14,7 +14,7 @@ namespace scale {
    * Vector wrapper, that is scale encoded without prepended CompactInteger
    */
   struct EncodeOpaqueValue {
-    gsl::span<const uint8_t> v;
+    ConstSpanOfBytes v;
   };
 
   template <class Stream,
@@ -43,7 +43,5 @@ namespace scale {
    * @return success if input was appended to self_encoded, failure otherwise
    */
   outcome::result<void> append_or_new_vec(std::vector<uint8_t> &self_encoded,
-                                          gsl::span<const uint8_t> input);
+                                          ConstSpanOfBytes input);
 }  // namespace scale
-
-#endif  // SCALE_CORE_SCALE_ENCODE_APPEND_HPP

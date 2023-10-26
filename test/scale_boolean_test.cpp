@@ -1,5 +1,6 @@
 /**
- * Copyright Soramitsu Co., Ltd. All Rights Reserved.
+ * Copyright Quadrivium LLC
+ * All Rights Reserved
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -10,7 +11,6 @@
 #include "scale/scale_encoder_stream.hpp"
 #include "scale/scale_error.hpp"
 
-#include "util/literals.hpp"
 #include "util/outcome.hpp"
 
 using scale::ByteArray;
@@ -46,12 +46,10 @@ struct ThreeBooleans {
   bool b3 = false;
 };
 
-template <class Stream,
-            typename = std::enable_if_t<Stream::is_decoder_stream>>
-  Stream &operator>>(Stream &s, ThreeBooleans &v) {
+template <class Stream, typename = std::enable_if_t<Stream::is_decoder_stream>>
+Stream &operator>>(Stream &s, ThreeBooleans &v) {
   return s >> v.b1 >> v.b2 >> v.b3;
 }
-
 
 /**
  * @given byte array containing values {0, 1, 2}

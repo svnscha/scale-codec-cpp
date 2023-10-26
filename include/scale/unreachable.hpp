@@ -1,10 +1,10 @@
 /**
-* Copyright Soramitsu Co., Ltd. All Rights Reserved.
-* SPDX-License-Identifier: Apache-2.0
-*/
+ * Copyright Quadrivium LLC
+ * All Rights Reserved
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
-#ifndef SCALE_UNREACHABLE_HPP
-#define SCALE_UNREACHABLE_HPP
+#pragma once
 
 /**
  * @brief This file declares UNREACHABLE macro. Use it to prevent compiler
@@ -22,5 +22,3 @@ class Unreachable_At_Line {};
 #endif
 
 #undef GCC_VERSION
-
-#endif // SCALE_UNREACHABLE_HPP

@@ -1,5 +1,6 @@
 /**
- * Copyright Soramitsu Co., Ltd. All Rights Reserved.
+ * Copyright Quadrivium LLC
+ * All Rights Reserved
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -45,7 +46,7 @@ TEST(Scale, encodeVectorOfBool) {
   ASSERT_NO_THROW((s << collection));
   auto &&out = s.to_vector();
 
-  auto stream = ScaleDecoderStream(gsl::make_span(out));
+  auto stream = ScaleDecoderStream(out);
   std::vector<bool> decoded;
   stream >> decoded;
   ASSERT_TRUE(std::equal(
@@ -83,7 +84,7 @@ TEST(Scale, encodeCollectionUint16) {
   ASSERT_NO_THROW((s << collection));
   auto &&out = s.to_vector();
 
-  auto stream = ScaleDecoderStream(gsl::make_span(out));
+  auto stream = ScaleDecoderStream(out);
   std::vector<uint16_t> decoded;
   stream >> decoded;
   ASSERT_TRUE(std::equal(
@@ -104,6 +105,7 @@ TEST(Scale, encodeCollectionUint16) {
 struct TestStruct : std::vector<uint16_t> {
   static constexpr bool is_static_collection = false;
 };
+
 /**
  * @given collection of items of type uint16_t, derived from std::vector
  * @when encodeCollection is applied
@@ -120,7 +122,7 @@ TEST(Scale, encodeDerivedCollectionUint16) {
   ASSERT_NO_THROW((s << collection));
   auto &&out = s.to_vector();
 
-  auto stream = ScaleDecoderStream(gsl::make_span(out));
+  auto stream = ScaleDecoderStream(out);
   TestStruct decoded;
   stream >> decoded;
   ASSERT_TRUE(std::equal(
@@ -149,7 +151,7 @@ TEST(Scale, encodeDequeUint16) {
   ASSERT_NO_THROW((s << collection));
   auto &&out = s.to_vector();
 
-  auto stream = ScaleDecoderStream(gsl::make_span(out));
+  auto stream = ScaleDecoderStream(out);
   std::deque<uint16_t> decoded;
   stream >> decoded;
   ASSERT_TRUE(std::equal(
@@ -236,7 +238,7 @@ TEST(Scale, encodeLongCollectionUint16) {
   // header takes 4 byte,
   // first 4 bytes represent le-encoded value 2^16 + 2
   // which is compact-encoded value 2^14 = 16384
-  auto stream = ScaleDecoderStream(gsl::make_span(out));
+  auto stream = ScaleDecoderStream(out);
   CompactInteger res{};
   ASSERT_NO_THROW(stream >> res);
   ASSERT_EQ(res, 16384);
@@ -284,7 +286,7 @@ TEST(Scale, encodeVeryLongCollectionUint8) {
   // which means that number of items requires 4 bytes
   // 3 next bytes are 0, and the last 4-th == 2^6 == 64
   // which is compact-encoded value 2^14 = 16384
-  auto stream = ScaleDecoderStream(gsl::make_span(out));
+  auto stream = ScaleDecoderStream(out);
   CompactInteger bi{};
   ASSERT_NO_THROW(stream >> bi);
   ASSERT_EQ(bi, 1048576);
@@ -304,9 +306,9 @@ TEST(Scale, encodeVeryLongCollectionUint8) {
 
 // following test takes too much time, don't run it
 /**
- * @given very long collection of items of type uint8_t containing 2^30 ==
- * 1073741824 items this number takes ~ 1 Gb of data where collection[i]  == i %
- * 256
+ * @given very long collection of items of type uint8_t containing
+ * 2^30 == 1073741824 items this number takes ~ 1 Gb of data where
+ * collection[i] == i % 256
  * @when encodeCollection is applied
  * @then obtain byte array of length 1073741824 + 5 bytes (header) bytes
  * where first bytes represent header, other are data itself
@@ -330,7 +332,7 @@ TEST(Scale, DISABLED_encodeVeryLongCollectionUint8) {
   // requires 4 bytes
   // 3 next bytes are 0, and the last 4-th == 2^6 == 64
   // which is compact-encoded value 2^14 = 16384
-  auto stream = ScaleDecoderStream(gsl::make_span(out));
+  auto stream = ScaleDecoderStream(out);
   CompactInteger bi{};
   ASSERT_NO_THROW(stream >> bi);
   ASSERT_EQ(bi, length);
@@ -360,7 +362,7 @@ TEST(Scale, encodeMapTest) {
   ASSERT_NO_THROW((s << collection));
   auto &&out = s.to_vector();
 
-  auto stream = ScaleDecoderStream(gsl::make_span(out));
+  auto stream = ScaleDecoderStream(out);
   std::map<uint32_t, uint32_t> decoded;
   stream >> decoded;
   ASSERT_TRUE(std::equal(
@@ -400,21 +402,21 @@ TEST(Scale, decodeSizeLimitedCollection) {
   auto &&out = s.to_vector();
 
   {
-    auto stream = ScaleDecoderStream(gsl::make_span(out));
+    auto stream = ScaleDecoderStream(out);
     SizeLimitedVector<4, int> decoded;
     ASSERT_NO_THROW((stream >> decoded));
     ASSERT_TRUE(std::equal(
         decoded.begin(), decoded.end(), collection.begin(), collection.end()));
   }
   {
-    auto stream = ScaleDecoderStream(gsl::make_span(out));
+    auto stream = ScaleDecoderStream(out);
     SizeLimitedVector<3, int> decoded;
     ASSERT_NO_THROW((stream >> decoded));
     ASSERT_TRUE(std::equal(
         decoded.begin(), decoded.end(), collection.begin(), collection.end()));
   }
   {
-    auto stream = ScaleDecoderStream(gsl::make_span(out));
+    auto stream = ScaleDecoderStream(out);
     SizeLimitedVector<2, int> decoded;
 
     try {
@@ -424,4 +426,108 @@ TEST(Scale, decodeSizeLimitedCollection) {
       EXPECT_EQ(e.code(), DecodeError::TOO_MANY_ITEMS);
     }
   }
+}
+
+struct ExplicitlyDefinedAsStatic : public std::vector<int> {
+  static constexpr bool is_static_collection = true;
+  using Collection = std::vector<int>;
+  using Collection::Collection;
+};
+
+TEST(Scale, encodeExplicitlyDefinedAsStatic) {
+  using TestCollection = ExplicitlyDefinedAsStatic;
+
+  const TestCollection collection{1, 2, 3, 4, 5};
+
+  ScaleEncoderStream s;
+  ASSERT_NO_THROW((s << collection));
+  auto &&out = s.to_vector();
+
+  auto stream = ScaleDecoderStream(out);
+  TestCollection decoded{0xff, 0xff, 0xff, 0xff, 0xff};
+  stream >> decoded;
+  ASSERT_TRUE(std::equal(
+      decoded.begin(), decoded.end(), collection.begin(), collection.end()));
+}
+
+struct ExplicitlyDefinedAsDynamic : public std::vector<int> {
+  static constexpr bool is_static_collection = false;
+  using Collection = std::vector<int>;
+  using Collection::Collection;
+};
+
+TEST(Scale, encodeExplicitlyDefinedAsDynamic) {
+  using TestCollection = ExplicitlyDefinedAsDynamic;
+
+  const TestCollection collection{1, 2, 3, 4, 5};
+  ScaleEncoderStream s;
+  ASSERT_NO_THROW((s << collection));
+  auto &&out = s.to_vector();
+
+  auto stream = ScaleDecoderStream(out);
+  TestCollection decoded{0xff, 0xff, 0xff};
+  stream >> decoded;
+  ASSERT_TRUE(std::equal(
+      decoded.begin(), decoded.end(), collection.begin(), collection.end()));
+}
+
+struct ImplicitlyDefinedAsStatic : public std::array<int, 5> {
+  using Collection = std::array<int, 5>;
+};
+
+TEST(Scale, encodeImplicitlyDefinedAsStatic) {
+  using TestCollection = ImplicitlyDefinedAsStatic;
+
+  const TestCollection collection{1, 2, 3, 4, 5};
+  ScaleEncoderStream s;
+  ASSERT_NO_THROW((s << collection));
+  auto &&out = s.to_vector();
+
+  auto stream = ScaleDecoderStream(out);
+  TestCollection decoded{0xff, 0xff, 0xff, 0xff, 0xff};
+  stream >> decoded;
+  ASSERT_TRUE(std::equal(
+      decoded.begin(), decoded.end(), collection.begin(), collection.end()));
+}
+
+struct ImplicitlyDefinedAsDynamic : public std::vector<int> {
+  using Collection = std::vector<int>;
+  using Collection::Collection;
+};
+
+TEST(Scale, encodeImplicitlyDefinedAsDynamic) {
+  using TestCollection = ImplicitlyDefinedAsDynamic;
+
+  const TestCollection collection{1, 2, 3, 4, 5};
+  ScaleEncoderStream s;
+  ASSERT_NO_THROW((s << collection));
+  auto &&out = s.to_vector();
+
+  auto stream = ScaleDecoderStream(out);
+  TestCollection decoded{0xff, 0xff, 0xff};
+  stream >> decoded;
+  ASSERT_TRUE(std::equal(
+      decoded.begin(), decoded.end(), collection.begin(), collection.end()));
+}
+
+struct StaticSpan : public std::span<int, 5> {
+  using Collection = std::span<int, 5>;
+  using Collection::Collection;
+};
+
+TEST(Scale, encodeStaticSpan) {
+  using TestCollection = StaticSpan;
+
+  std::array<int, 5> original_data{1, 2, 3, 4, 5};
+  const TestCollection collection(original_data);
+  ScaleEncoderStream s;
+  ASSERT_NO_THROW((s << collection));
+  auto &&out = s.to_vector();
+
+  auto stream = ScaleDecoderStream(out);
+  std::array<int, 5> data{0xff, 0xff, 0xff, 0xff, 0xff};
+  TestCollection decoded{data};
+  stream >> decoded;
+  ASSERT_TRUE(std::equal(
+      decoded.begin(), decoded.end(), collection.begin(), collection.end()));
 }

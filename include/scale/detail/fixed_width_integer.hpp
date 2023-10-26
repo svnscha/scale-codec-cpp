@@ -1,10 +1,10 @@
 /**
- * Copyright Soramitsu Co., Ltd. All Rights Reserved.
+ * Copyright Quadrivium LLC
+ * All Rights Reserved
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifndef SCALE_SCALE_UTIL_HPP
-#define SCALE_SCALE_UTIL_HPP
+#pragma once
 
 #include <algorithm>
 #include <array>
@@ -101,6 +101,4 @@ namespace scale::detail {
     I sv = -static_cast<I>((~v) + 1);
     return sv;
   }
-} // namespace scale::detail
-
-#endif // SCALE_SCALE_UTIL_HPP
+}  // namespace scale::detail
