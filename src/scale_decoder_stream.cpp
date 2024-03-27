@@ -134,6 +134,10 @@ namespace scale {
     return static_cast<size_t>(current_index_ + n) <= span_.size();
   }
 
+  void ScaleDecoderStream::seek(size_t size) {
+    current_index_ += size;
+  }
+
   uint8_t ScaleDecoderStream::nextByte() {
     if (not hasMore(1)) {
       raise(DecodeError::NOT_ENOUGH_DATA);

@@ -327,6 +327,8 @@ namespace scale {
      */
     bool hasMore(uint64_t n) const;
 
+    void seek(size_t size);
+
     /**
      * @brief takes one byte from stream and
      * advances current byte iterator by one

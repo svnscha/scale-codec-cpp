@@ -10,6 +10,7 @@
 #include <system_error>  // bring in std::error_code et al
 
 #include <boost/config.hpp>  // for BOOST_SYMBOL_EXPORT
+#include <typeinfo>
 
 #ifndef SCALE_EXPORT
 #if defined(BOOST_SYMBOL_EXPORT)
