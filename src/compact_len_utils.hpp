@@ -28,6 +28,6 @@ namespace scale::compact {
     if (val < EncodingCategoryLimits::kMinUint16) return 1;
     if (val < EncodingCategoryLimits::kMinUint32) return 2;
     if (val < EncodingCategoryLimits::kMinBigInteger) return 4;
-    return countBytes(val);
+    return static_cast<uint32_t>(countBytes(val));
   }
 }  // namespace scale::compact

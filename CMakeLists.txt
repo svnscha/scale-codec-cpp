@@ -6,17 +6,6 @@
 
 cmake_minimum_required(VERSION 3.12)
 
-if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.27")
-    cmake_policy(SET CMP0144 NEW)
-endif()
-
-include(${CMAKE_CURRENT_LIST_DIR}/cmake/HunterGate.cmake)
-
-HunterGate(
-    URL  https://github.com/qdrvm/hunter/archive/refs/tags/v0.23.257-qdrvm10.tar.gz
-    SHA1 72b446a4424ba28ea90f9a68a9134b0f8e44b5b2
-)
-
 project(Scale LANGUAGES CXX VERSION 1.1.0)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -27,7 +16,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(BUILD_TESTS "Whether to include the test suite in build" OFF)
 
-hunter_add_package(Boost)
 find_package(Boost CONFIG REQUIRED)
 
 add_subdirectory(src)

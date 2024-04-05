@@ -87,7 +87,7 @@ namespace scale {
        * Minor 2 bits store encoding option, in our case it is 0b11 == 3
        * We just add 3 to the result of operations above
        */
-      uint8_t header = (bigIntLength - 4) * 4 + 3;
+      uint8_t header = static_cast<uint8_t>((bigIntLength - 4) * 4 + 3);
 
       result.push_back(header);
 
