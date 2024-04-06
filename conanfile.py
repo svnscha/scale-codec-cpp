@@ -1,3 +1,4 @@
+
 from conan import ConanFile
 from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout
 
@@ -12,9 +13,13 @@ class libscaleConan(ConanFile):
     # Binary configuration
     settings = "os", "compiler", "build_type", "arch"
 
-    options = {"shared": [True, False]}
+    options = {
+        "shared": [True, False],
+        "fPIC": [True, False]
+    }
     default_options = {
         "shared": False,
+        "fPIC": True,
         "boost*:header_only": True
     }
 
@@ -22,6 +27,14 @@ class libscaleConan(ConanFile):
 
     # Sources are located in the same place as this recipe, copy them to the recipe
     exports_sources = "CMakeLists.txt", "src/*", "include/*"
+
+    def config_options(self):
+        if self.settings.os == "Windows":
+            del self.options.fPIC
+
+    def configure(self):
+        if self.options.shared:
+            self.options.rm_safe("fPIC")
 
     def requirements(self):
         self.requires("boost/1.84.0")
