@@ -15,7 +15,7 @@ Add this package to your project's `conanfile.txt`:
 
 ```ini
 [requires]
-libscale/1.1.0@svnscha/dev
+libscale/1.1.1@svnscha/dev
 
 [generators]
 cmake

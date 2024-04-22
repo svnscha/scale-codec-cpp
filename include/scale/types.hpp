@@ -11,7 +11,7 @@
 #include <span>
 #include <vector>
 
-#include <boost/multiprecision/cpp_int.hpp>
+#include <math/wide_integer/uintwide_t.h>
 
 namespace scale {
 
@@ -25,7 +25,7 @@ namespace scale {
   using MutSpanOfBytes = std::span<uint8_t>;
 
   /// @brief represents compact integer value
-  using CompactInteger = boost::multiprecision::cpp_int;
+  using CompactInteger = math::wide_integer::uint256_t;
 
   /// @brief OptionalBool is internal extended bool type
   enum class OptionalBool : uint8_t {

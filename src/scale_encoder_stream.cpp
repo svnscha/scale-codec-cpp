@@ -47,17 +47,17 @@ namespace scale {
       }
 
       if (value < compact::EncodingCategoryLimits::kMinUint16) {
-        encodeFirstCategory(value.convert_to<uint8_t>(), out);
+        encodeFirstCategory(static_cast<std::uint8_t>(value), out);
         return;
       }
 
       if (value < compact::EncodingCategoryLimits::kMinUint32) {
-        encodeSecondCategory(value.convert_to<uint16_t>(), out);
+        encodeSecondCategory(static_cast<std::uint16_t>(value), out);
         return;
       }
 
       if (value < compact::EncodingCategoryLimits::kMinBigInteger) {
-        encodeThirdCategory(value.convert_to<uint32_t>(), out);
+        encodeThirdCategory(static_cast<std::uint32_t>(value), out);
         return;
       }
 

@@ -6,7 +6,7 @@
 
 cmake_minimum_required(VERSION 3.12)
 
-project(Scale LANGUAGES CXX VERSION 1.1.0)
+project(Scale LANGUAGES CXX VERSION 1.1.1)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -16,7 +16,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(BUILD_TESTS "Whether to include the test suite in build" OFF)
 
-find_package(Boost CONFIG REQUIRED)
+find_package(Boost REQUIRED)
+find_package(wide-integer REQUIRED)
 
 add_subdirectory(src)
 

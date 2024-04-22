@@ -4,7 +4,7 @@ from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout
 
 class libscaleConan(ConanFile):
     name = "libscale"
-    version = "1.1.0"
+    version = "1.1.1"
 
     url = "https://github.com/svnscha/scale-codec-cpp"
     description = "Designing a Better World Through Decentralized Technologies"
@@ -37,7 +37,8 @@ class libscaleConan(ConanFile):
             self.options.rm_safe("fPIC")
 
     def requirements(self):
-        self.requires("boost/1.84.0")
+        self.requires("boost/1.84.0", transitive_headers=True)
+        self.requires("wide-integer/cci.20231015", transitive_headers=True)
 
     def generate(self):
         tc = CMakeToolchain(self)

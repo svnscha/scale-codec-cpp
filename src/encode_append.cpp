@@ -26,8 +26,8 @@ namespace scale {
     CompactInteger len;
     #endif
     OUTCOME_TRY(len, scale::decode<CompactInteger>(data));
-    auto new_len = (len + 1).convert_to<uint32_t>();
-    auto encoded_len = compact::compactLen(len.convert_to<uint32_t>());
+    auto new_len = static_cast<std::uint32_t>(len + 1);
+    auto encoded_len = compact::compactLen(static_cast<uint32_t>(len));
     auto encoded_new_len = compact::compactLen(new_len);
     return std::make_tuple(new_len, encoded_len, encoded_new_len);
   }

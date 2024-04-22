@@ -9,6 +9,4 @@ target_include_directories(scale PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include/scale>
     )
-target_link_libraries(scale
-    Boost::boost
-    )
+target_link_libraries(scale boost::boost wide-integer::wide-integer)
